@@ -26,5 +26,5 @@ jobs:
         name: Rtest
         allowUpdates: true
         tag: test
-        token: ${{ env.GIT_TOKEN }}
+        token: ${{ secrets.ACCESS_TOKEN }}
         artifacts: ./
