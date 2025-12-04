@@ -42,13 +42,24 @@ on:
           - v24.10.3
           - v24.10.4
           - v24.10.y
+
+      CONFIG:
+        description: '配置文件'
+        required: true
+        default: 'g68-plus'
+        type: choice
+        options:
+          - ''
+          - _mtk_wifi
+          - -docker
+          - _test
           
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: ${{ inputs.SYSTEM || 'immortalwrt'}}
   REPO_BRANCH: ${{ inputs.BRANCH || 'openwrt-24.10'}}
   REPO_URL: https://github.com/immortalwrt/immortalwrt
-  CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'immortalwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}_test.config
+  CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'immortalwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}${{ inputs.CONFIG || ''}}.config
   DIY_P1_SH: scripts/${{ inputs.SYSTEM || 'immortalwrt'}}/diy-part1.sh
   DIY_P2_SH: scripts/${{ inputs.SYSTEM || 'immortalwrt'}}/diy-part2.sh
   CLASH_KERNEL: arm64
