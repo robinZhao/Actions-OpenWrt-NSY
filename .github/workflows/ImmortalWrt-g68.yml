@@ -32,7 +32,7 @@ on:
       BRANCH:
         description: '系统版本 (带 .y 匹配最新 tag)'
         required: true
-        default: 'openwrt-24.10.y'
+        default: 'v24.10.y'
         type: choice
         options:
           - main
