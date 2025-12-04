@@ -20,7 +20,7 @@
 +       rk3568-x3568-v4.dtb \
 +       rk3568-nsy-g68-plus.dtb \
 +       rk3568-nsy-g16-plus.dtb \
-+       rk3568-bdy-g18-plus.dtb \
++       rk3568-bdy-g18-pro.dtb \
 +       rk3568-xiguapi-v3.dtb
 +
 +dtb-$(CONFIG_ROCKCHIP_RK3588) += \
