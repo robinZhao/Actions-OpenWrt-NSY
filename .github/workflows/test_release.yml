@@ -21,7 +21,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@main
     - name: 上传发布固件
-      uses: ncipollo/release-action@v1.2.0
+      uses: ncipollo/release-action@v1
       with:
         name: Rtest
         tag: test1
