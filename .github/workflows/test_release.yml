@@ -1,5 +1,5 @@
 
-name: ImmortalWrt-g68
+name: test_release
 
 on:
   schedule:
