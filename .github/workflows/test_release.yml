@@ -26,5 +26,5 @@ jobs:
         name: Rtest
         allowUpdates: true
         tag: test5
-        token: ${{GITHUB_TOKEN }}
+        token: ${{ GITHUB_TOKEN }}
         artifacts: ./
