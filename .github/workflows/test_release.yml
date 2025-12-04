@@ -24,6 +24,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         name: Rtest
+        allowUpdate: true
         tag: test1
         token: ${{secrets.GITHUB_TOKEN }}
         artifacts: ./
