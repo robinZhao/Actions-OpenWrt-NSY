@@ -1,5 +1,5 @@
 
-name: test_release
+name: TEST-RELEASE
 
 on:
   schedule:
@@ -13,7 +13,10 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-22.04
+    
     steps:
+    - name: checkout
+      uses: actions/checkout@main
     - name: 上传发布固件
       uses: ncipollo/release-action@v1
       with:
@@ -21,4 +24,4 @@ jobs:
         allowUpdates: true
         tag: test
         token: ${{ env.GITHUB_TOKEN }}
-        artifacts: ../
+        artifacts: ./
