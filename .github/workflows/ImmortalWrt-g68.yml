@@ -46,7 +46,7 @@ on:
       CONFIG:
         description: '配置文件'
         required: true
-        default: 'g68-plus'
+        default: '_test'
         type: choice
         options:
           - ''
