@@ -5,12 +5,12 @@ date_version=$(date +"%Y%m%d%H")
 echo $date_version > version
 
 # 为固件版本加上编译作者
-author="Wigmox"
+author="robinZhao"
 sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V ${date_version} by ${author}'/g" package/base-files/files/etc/openwrt_release
 sed -i "s/OPENWRT_RELEASE.*/OPENWRT_RELEASE=\"%D %V ${date_version} by ${author}\"/g" package/base-files/files/usr/lib/os-release
 
 # 修改默认IP
-sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
+# sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
 # 更改默认 Shell 为 zsh
 # sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
@@ -21,11 +21,11 @@ sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 # 80_mount_root 添加挂载目录
 # 这个脚本用于在package/base-files/files/lib/preinit/80_mount_root文件中的do_mount_root函数内添加resize2fs命令
 # 使用sed命令在do_mount_root() {之后添加resize2fs命令
-sed -i '/^do_mount_root() {/a\	resize2fs /dev/mmcblk0p1\
-	resize2fs /dev/mmcblk0p2\
-	resize2fs /dev/mmcblk0p3\
-	resize2fs /dev/mmcblk0p4\
-	resize2fs /dev/mmcblk0p5' "package/base-files/files/lib/preinit/80_mount_root"
+#sed -i '/^do_mount_root() {/a\	resize2fs /dev/mmcblk0p1\
+#	resize2fs /dev/mmcblk0p2\
+#	resize2fs /dev/mmcblk0p3\
+#	resize2fs /dev/mmcblk0p4\
+#	resize2fs /dev/mmcblk0p5' "package/base-files/files/lib/preinit/80_mount_root"
 
 
 # firstboot 添加删除 overlay 目录命令
@@ -220,7 +220,7 @@ function git_sparse_clone() {
 
 
 # 更改 Argon 主题背景
-rm -rf feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/background/*
+# rm -rf feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/background/*
 # cp -f $GITHUB_WORKSPACE/images/bg1.jpg feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 # mkdir -p package/luci-theme-argon/htdocs/luci-static/argon/img
 # cp -f $GITHUB_WORKSPACE/images/bg1.jpg package/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
@@ -247,7 +247,7 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package
 
 
 # 定时限速插件
-git clone --depth=1 https://github.com/sirpdboy/luci-app-eqosplus package/luci-app-eqosplus
+#git clone --depth=1 https://github.com/sirpdboy/luci-app-eqosplus package/luci-app-eqosplus
 
 # 添加 gen_image_generic.sh 运行权限
 chmod +x scripts/gen_image_generic.sh
