@@ -5,18 +5,18 @@ date_version=$(date +"%Y%m%d%H")
 echo $date_version > version
 
 # 为固件版本加上编译作者
-author="Wigmox"
+author="robinZhao"
 sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V ${date_version} by ${author}'/g" package/base-files/files/etc/openwrt_release
 sed -i "s/OPENWRT_RELEASE.*/OPENWRT_RELEASE=\"%D %V ${date_version} by ${author}\"/g" package/base-files/files/usr/lib/os-release
 
 # 修改默认IP
-sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
+#sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
 # 更改默认 Shell 为 zsh
 # sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # TTYD 免登录
-sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
+#sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
 
 # 修改软件源
 sed -i 's|https://mirrors.vsean.net/openwrt|https://mirrors.pku.edu.cn/immortalwrt|g' package/emortal/default-settings/files/99-default-settings-chinese
@@ -212,58 +212,3 @@ chmod +x scripts/gen_image_generic.sh
 
 
 
-# --- 配置 ---
-# 补丁文件所在的目录
-PATCH_DIR="patch"
-
-# 需要被打补丁的源码根目录
-# 设置为 "." 表示当前目录
-SOURCE_DIR="."
-
-# --- 脚本主逻辑 ---
-
-# 检查补丁目录是否存在
-if [ ! -d "$PATCH_DIR" ]; then
-    echo "补丁目录 '$PATCH_DIR' 不存在，无需操作。"
-    exit 0
-fi
-
-# 检查是否存在 .patch 文件
-# shopt -s nullglob 让通配符在没有匹配时返回空，而不是字符串本身
-shopt -s nullglob
-patches=("$PATCH_DIR"/*.patch)
-if [ ${#patches[@]} -eq 0 ]; then
-    echo "在 '$PATCH_DIR' 目录中没有找到 .patch 文件，无需操作。"
-    exit 0
-fi
-shopt -u nullglob # 恢复默认行为
-
-echo "==> 开始应用补丁..."
-
-# 遍历并应用所有补丁文件 (按字母顺序)
-# 使用 find 和 sort 来确保跨平台和处理特殊字符的兼容性
-find "$PATCH_DIR" -maxdepth 1 -type f -name "*.patch" | sort | while IFS= read -r patch_file; do
-    # 打印正在应用的补丁名
-    echo "Applying patch $(basename "$patch_file")"
-
-    # 使用 patch 命令应用补丁
-    # -f: 强制
-    # -p1: 剥离第一层目录
-    # -d: 指定源码目录
-    # < "$patch_file": 从补丁文件读取输入
-    patch -f -p1 -d "$SOURCE_DIR" < "$patch_file"
-
-    # 检查上一条命令的退出码 (返回值)
-    # $? 存储了上一条命令的退出码，0 代表成功，非 0 代表失败
-    if [ $? -ne 0 ]; then
-        echo "===================================================="
-        echo "错误: 补丁应用失败！请检查补丁文件或源码！"
-        echo "失败的补丁: $(basename "$patch_file")"
-        echo "===================================================="
-        # 退出脚本，并返回一个错误码
-        exit 1
-    fi
-done
-
-echo "==> 所有补丁已成功应用。"
-exit 0
