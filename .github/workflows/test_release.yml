@@ -24,7 +24,6 @@ jobs:
       uses: ncipollo/release-action@v1.2.0
       with:
         name: Rtest
-        allowUpdates: true
-        tag: test
+        tag: test1
         token: ${{ secrets.ACCESS_TOKEN }}
         artifacts: ./
