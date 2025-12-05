@@ -340,7 +340,7 @@ jobs:
         allowUpdates: true
         tag: ${{ env.TAG_DATE }}-${{ env.FIRMWARE_TAG }}
         token:  ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ${{ env.FIRMWARE_PATH }}
+        artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
           **This is OpenWrt Firmware for ${{ env.FIRMWARE_TAG }}**
           ### 📒 固件信息

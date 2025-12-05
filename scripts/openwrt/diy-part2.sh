@@ -5,18 +5,18 @@ date_version=$(date +"%Y%m%d%H")
 echo $date_version > version
 
 # 为固件版本加上编译作者
-author="Wigmox"
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V ${date_version} by ${author}'/g" package/base-files/files/etc/openwrt_release
-sed -i "s/OPENWRT_RELEASE.*/OPENWRT_RELEASE=\"%D %V ${date_version} by ${author}\"/g" package/base-files/files/usr/lib/os-release
+#author="robinZhao"
+#sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V ${date_version} by ${author}'/g" package/base-files/files/etc/openwrt_release
+#sed -i "s/OPENWRT_RELEASE.*/OPENWRT_RELEASE=\"%D %V ${date_version} by ${author}\"/g" package/base-files/files/usr/lib/os-release
 
 # 修改默认IP
-sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
+#sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
 # 更改默认 Shell 为 zsh
 # sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # TTYD 免登录
-sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
+#sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
 
 # 修改软件源
 # 已通过 config 修改软件源，
@@ -183,7 +183,7 @@ TARGET_DEVICES += bdy_g18-pro" >> target/linux/rockchip/image/armv8.mk
 
 
 # 更改 Argon 主题背景
-rm -rf feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/background/*
+#rm -rf feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/background/*
 # cp -f $GITHUB_WORKSPACE/images/bg1.jpg feeds/luci/themes/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 # mkdir -p package/luci-theme-argon/htdocs/luci-static/argon/img
 # cp -f $GITHUB_WORKSPACE/images/bg1.jpg package/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
@@ -210,7 +210,7 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package
 
 
 # 添加 gen_image_generic.sh 运行权限
-chmod +x scripts/gen_image_generic.sh
+#chmod +x scripts/gen_image_generic.sh
 
 # 打上 patch 目录下的补丁
 # 使用git apply 循环处理
@@ -223,47 +223,3 @@ echo :打 patch 目录下的补丁
 # done
 
 
-
-# Set directories from arguments, or use defaults.
-targetdir=${1-.}
-patchdir=${2-./patch}
-patchpattern=${3-*}
-
-if [ ! -d "${targetdir}" ] ; then
-    echo "Aborting.  '${targetdir}' is not a directory."
-    exit 1
-fi
-if [ ! -d "${patchdir}" ] ; then
-    echo "Aborting.  '${patchdir}' is not a directory."
-    exit 1
-fi
-    
-for i in ${patchdir}/${patchpattern} ; do 
-    case "$i" in
-	*.gz)
-	type="gzip"; uncomp="gunzip -dc"; ;; 
-	*.bz)
-	type="bzip"; uncomp="bunzip -dc"; ;; 
-	*.bz2)
-	type="bzip2"; uncomp="bunzip2 -dc"; ;; 
-	*.zip)
-	type="zip"; uncomp="unzip -d"; ;; 
-	*.Z)
-	type="compress"; uncomp="uncompress -c"; ;; 
-	*)
-	type="plaintext"; uncomp="cat"; ;; 
-    esac
-    [ -d "${i}" ] && echo "Ignoring subdirectory ${i}" && continue	
-    echo ""
-    echo "Applying ${i} using ${type}: " 
-    ${uncomp} ${i} | ${PATCH:-patch} -f -p1 -d ${targetdir}
-    if [ $? != 0 ] ; then
-        echo "Patch failed!  Please fix $i!"
-	exit 1
-    fi
-done
-
-echo ""
-echo "--------------------------------------------------"
-echo "所有补丁已成功应用。"
-exit 0
