@@ -1,9 +1,6 @@
 name: Openwrt-build
 
 on:
-  schedule:
-    - cron: '0 20 * * *'
-
   workflow_dispatch:
 
     inputs:
@@ -21,7 +18,7 @@ on:
       BRANCH:
         description: '系统版本 (带 .y 匹配最新 tag)'
         required: true
-        default: 'openwrt-24.10'
+        default: 'v24.10.y'
         type: choice
         options:
           - main
@@ -46,7 +43,7 @@ on:
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: openwrt
-  REPO_BRANCH: ${{ inputs.BRANCH || 'openwrt-24.10'}}
+  REPO_BRANCH: ${{ inputs.BRANCH || 'v24.10.y'}}
   REPO_URL: https://github.com/openwrt/openwrt
   CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'openwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}_mtk_wifi.config
   DIY_P1_SH: scripts/openwrt/diy-part1.sh
