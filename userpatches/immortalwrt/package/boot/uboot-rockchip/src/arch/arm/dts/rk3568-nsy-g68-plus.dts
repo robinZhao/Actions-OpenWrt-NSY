@@ -686,11 +686,12 @@
 		vpcie3v3-supply = <&vcc3v3_pcie>;
 		reset-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
 		status = "okay";
-		num-lanes = <0x1>;
+		num-lanes = <0x10>;
 		pinctrl-0 = <&pcie30x2_reset_h>;
 };
 
 &pcie30phy {
+		rockchip,pipe-sel = <6>;
 		data-lanes = <1 2>; //配置lan的通道树
 		status = "okay";
 };
