@@ -40,8 +40,7 @@ define Build/pine64-img
 		32768
 
 	# Copy the u-boot-rockchip.bin to the image at sector 0x40
-	# dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-u-boot-rockchip.bin of="$@" seek=64 conv=notrunc
-	dd if="$(TOPDIR)"/rk3568-6.x-uboot.img of="$@" seek=64 conv=notrunc
+	dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-u-boot-rockchip.bin of="$@" seek=64 conv=notrunc
 endef
 
 ### Devices ###
