@@ -15,7 +15,7 @@ define Build/boot-common
 	# and the kernel image (as kernel.img)
 	rm -fR $@.boot
 	mkdir -p $@.boot
-	$(CP) $(KDIR)/image-$(firstword $(notdir $(DEVICE_DTS))).dtb $@.boot/rockchip.dtb
+
 	$(CP) $(IMAGE_KERNEL) $@.boot/kernel.img
 endef
 
@@ -48,7 +48,6 @@ define Device/Default
   PROFILES := Default
   KERNEL = kernel-bin
   BOOT_SCRIPT :=
-  BOOT_FLOW :=
   IMAGES := sysupgrade.img.gz
   IMAGE/sysupgrade.img.gz = boot-common | boot-script $$(BOOT_SCRIPT) | pine64-img | gzip | append-metadata
   DEVICE_DTS = rockchip/$$(SOC)-$(lastword $(subst _, ,$(1)))
