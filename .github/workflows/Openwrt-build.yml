@@ -33,20 +33,20 @@ on:
       CONFIG:
         description: '配置文件'
         required: true
-        default: '_test'
+        default: '_mini'
         type: choice
         options:
           - ''
           - _mtk_wifi
           - -docker
-          - _test
+          - _mini
           
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: openwrt
   REPO_BRANCH: ${{ inputs.BRANCH || 'v24.10.y'}}
   REPO_URL: https://github.com/openwrt/openwrt
-  CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'openwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}${{ inputs.CONFIG || ''}}.config
+  CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'openwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}${{ inputs.CONFIG || '_mini'}}.config
   DIY_P1_SH: scripts/openwrt/diy-part1.sh
   DIY_P2_SH: scripts/openwrt/diy-part2.sh
   CLASH_KERNEL: arm64
