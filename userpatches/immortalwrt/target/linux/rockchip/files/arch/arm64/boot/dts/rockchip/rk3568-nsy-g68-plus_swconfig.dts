@@ -294,21 +294,21 @@
 	};
 
 	/* Fix the node name typo */
-// 	rtlgsw {
-// 		compatible = "notuse-realtek,rtl8367s";
-// 		realtek,mdio = <&mdio0>;
-// 		mii-bus = <&mdio0>;
-// 		realtek,id = <29>;
-// 		phy-id = <29>;
-// 		cpu_port = <7>;
+	rtlgsw {
+		compatible = "realtek,rtl8367s";
+		realtek,mdio = <&mdio0>;
+		mii-bus = <&mdio0>;
+		realtek,id = <29>;
+		phy-id = <29>;
+		cpu_port = <7>;
 
-// 		//txdelay, rxdelay, mode, ability.force_mode, ability.txpause, ability.rxpause, ability.link, ability.duplex, speed
-// 		//sgmii,
-// 		realtek,extif1 = <0 0 11 1 1 1 1 1 2>;
-// 		//rgmii
-// 		realtek,extif2 = <0 0 1 1 1 1 1 1 2>;
-// 		status = "okay";
-// 	};
+		//txdelay, rxdelay, mode, ability.force_mode, ability.txpause, ability.rxpause, ability.link, ability.duplex, speed
+		//sgmii,
+		realtek,extif1 = <0 0 11 1 1 1 1 1 2>;
+		//rgmii
+		realtek,extif2 = <0 0 1 1 1 1 1 1 2>;
+		status = "okay";
+	};
 };
 
 &i2c0 {
@@ -725,82 +725,24 @@
 		status = "okay";
 };
 
-/*使用DSA驱动模型*/
 &mdio0 {
-	#address-cells = <1>;
-    #size-cells = <0>;
-
-	rtl8367s: switch@29 {
-			compatible = "realtek,rtl8367s","realtek,rtl8365mb";
-			reg = <29>;
-
-			reset-gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
-			pinctrl-names = "default";
-			reset-assert-us = <20000>;
-			reset-deassert-us = <100000>;
-			pinctrl-0 = <&gmac0_reset>;
-			status = "okay";
-			ports {
-					#address-cells = <1>;
-					#size-cells = <0>;
-
-					port@0 {
-							reg = <0>;
-							label = "lan1";
-					};
-
-					port@1 {
-							reg = <1>;
-							label = "lan2";
-					};
-
-					port@2 {
-							reg = <2>;
-							label = "lan3";
-					};
-
-					port@3 {
-							reg = <3>;
-							label = "lan4";
-					};
-
-					port@4 {
-							reg = <4>;
-							label = "wan";
-					};
-					port@7 {
-							reg = <7>;
-							ethernet = <&gmac0>;
-							phy-mode = "rgmii";
-							tx-internal-delay-ps = <0>;
-							rx-internal-delay-ps = <0>;
-
-							fixed-link {
-									speed = <1000>;
-									full-duplex;
-							};
-					};
-
-			};
-	};
+	status = "okay";
 };
 
 &gmac0 {
 	status = "okay";
 	phy-mode = "rgmii";
 	clock_in_out = "output";
-	dsa,member = <0>;
-	// reset gpio 写到交换机配置里面
-	// snps,reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
-	// snps,reset-active-low;
-	// snps,reset-delays-us = <20000 100000 150000>;
+	snps,reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	snps,reset-delays-us = <0 20000 100000>;
 	assigned-clocks = <&cru SCLK_GMAC0_RX_TX &cru SCLK_GMAC0>;
-	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED &cru CLK_MAC0_2TOP>;
-	assigned-clock-rates = <0x0 125000000>;
-	tx_delay = <0x3c>;
-	rx_delay = <0x2f>;
+	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>;
+	assigned-clock-rates = <0 125000000>;
+	tx_delay = <0x3f>;
+	rx_delay = <0x2c>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&gmac0_miim &gmac0_tx_bus2 &gmac0_rx_bus2 &gmac0_rgmii_clk &gmac0_rgmii_bus /*&gmac0_reset*/>;
+	pinctrl-0 = <&gmac0_miim &gmac0_tx_bus2 &gmac0_rx_bus2 &gmac0_rgmii_clk &gmac0_rgmii_bus>;
 	fixed-link {
 		speed = <1000>;
 		full-duplex;
@@ -827,14 +769,15 @@
 &gmac1 {
 	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>;
 	assigned-clock-parents = <&gmac1_xpcsclk>;
-	dsa,member = <0>;
-	status = "disabled";
+	status = "okay";
 	phy-mode = "sgmii";
 	rockchip,pipegrf = <&pipegrf>;
 	rockchip,xpcs = <&xpcs>;
 	//snps,reset-gpio = <&gpio2 RK_PC2 GPIO_ACTIVE_LOW>;
 	//snps,reset-active-low;
 	//snps,reset-delays-us = <0 20000 100000>;
+	tx_delay = <0x30>;
+	rx_delay = <0x10>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&gmac1m1_miim>;
 	power-domains = <&power RK3568_PD_PIPE>;
