@@ -40,7 +40,7 @@ on:
           - _mtk_wifi
           - -docker
           - _mini
-          - _open_wifi
+          - _mini_open_wifi
           
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
