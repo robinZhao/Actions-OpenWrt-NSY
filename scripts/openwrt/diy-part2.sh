@@ -114,7 +114,7 @@ for cfg in $CONFIG_PATTERN; do
     [ -f "$cfg" ] || continue
     
     if grep -q '^# CONFIG_SWCONFIG is not set$' "$cfg"; then
-        sed -i 's/^# CONFIG_SWCONFIG is not set$/CONFIG_SWCONFIG=y/' "$cfg"
+#        sed -i 's/^# CONFIG_SWCONFIG is not set$/CONFIG_SWCONFIG=y/' "$cfg"
         echo "[替换] $cfg: 已修改禁用配置"
     elif ! grep -q '^CONFIG_SWCONFIG=' "$cfg"; then
         echo "CONFIG_SWCONFIG=y" >> "$cfg"
