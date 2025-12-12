@@ -337,6 +337,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}
+        commit: ${{ github.sha }}
         allowUpdates: true
         tag: ${{ env.TAG_DATE }}-${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}
         token: ${{ secrets.GITHUB_TOKEN }}

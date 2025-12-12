@@ -20,10 +20,15 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
+
+    - name: print tag
+      run: |
+        echo  ${{ github.sha }}
     - name: 上传发布固件
       uses: ncipollo/release-action@v1
       with:
         name: Rtest
+        commit: ${{ github.sha }}
         allowUpdates: true
         tag: test6
         token: ${{ secrets.GITHUB_TOKEN }}
