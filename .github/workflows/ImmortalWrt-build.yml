@@ -322,7 +322,7 @@ jobs:
         mv -f $OPENWRT_PATH/bin/packages/*/*/*.ipk packages
         tar -zcf Packages.tar.gz packages
         rm -rf packages feeds.buildinfo version.buildinfo
-        for file in *.gz; do mv "$file" "${{ env.FILE_DATE }}-${{ github.ref_name }}-$file"; done
+        for file in *.gz; do mv "$file" "${{ env.FILE_DATE }}-${{ github.ref_name }}${{ env.CONFIG_SUFFIX }}-$file"; done
         cp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/linux*/.config kernel.config
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
@@ -341,7 +341,7 @@ jobs:
         name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }} ${{ github.ref_name }}
         commit: ${{ github.sha }}
         allowUpdates: true
-        tag: ${{ env.TAG_DATE }}-${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}
+        tag: ${{ env.TAG_DATE }}-${{ github.ref_name }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
