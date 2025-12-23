@@ -255,7 +255,9 @@ jobs:
         
         # 复制
         # [ -e files ] && mv files $OPENWRT_PATH/files
-        
+        # 覆盖文件
+        [ -e $GITHUB_WORKSPACE/userpatches/$SYSTEM/override-${{ env.REPO_BRANCH }} ] && cp -r $GITHUB_WORKSPACE/userpatches/$SYSTEM/override-${{ env.REPO_BRANCH }}/* $OPENWRT_PATH/
+
         # 加载自定义配置
         chmod +x $DIY_P2_SH
         cd $OPENWRT_PATH
