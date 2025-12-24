@@ -44,7 +44,13 @@ on:
       
       ALL_KMODS:
         description: 'CONFIG_ALL_KMODS'
-        require: true
+        required: true
+        default: false
+        type: boolean
+        
+      TERMINAL:
+        description: '终端调试'
+        required: true
         default: false
         type: boolean
 
@@ -284,6 +290,10 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         make defconfig
+
+    - name: ssh连接
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: ${{ inputs.TERMINAL }}
 
     - name: 下载软件包
       id: package
