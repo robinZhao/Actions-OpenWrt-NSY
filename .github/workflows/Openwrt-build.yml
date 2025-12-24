@@ -41,6 +41,13 @@ on:
           - -docker
           - _mini_mtk_wifi
           - _mini_open_wifi
+      
+      ALL_KMODS:
+        description: 'CONFIG_ALL_KMODS'
+        require: true
+        default: false
+        type: boolean
+
           
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
@@ -201,12 +208,12 @@ jobs:
         echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
         
         # 读取 CPU 信息
-        DEVICE_TARGET=$(cat $CONFIG_FILE | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
+        DEVICE_TARGET=$(cat $GITHUB_WORKSPACE/$CONFIG_FILE | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
         echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
         echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_OUTPUT
         
         # 读取 CPU 架构
-        DEVICE_SUBTARGET=$(cat $CONFIG_FILE | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
+        DEVICE_SUBTARGET=$(cat $GITHUB_WORKSPACE/$CONFIG_FILE | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_OUTPUT
 
@@ -265,6 +272,12 @@ jobs:
         # cd $OPENWRT_PATH
         
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
+    
+    - name: 设置CONFIG_ALL_KMODS
+      id: set-all-kmods
+      if: ${{ inputs.ALL_KMODS }}
+      run: |
+          cat userpatches/${SYSTEM}/defconfig/packages.config >> $OPENWRT_PATH/.config
 
     - name: 进行编译配置
       id: make-compile-config
@@ -315,7 +328,7 @@ jobs:
         mv -f $OPENWRT_PATH/bin/packages/*/*/*.ipk packages
         tar -zcf Packages.tar.gz packages
         rm -rf packages feeds.buildinfo version.buildinfo
-        for file in *.gz; do mv "$file" "${{ env.FILE_DATE }}-${{ github.ref_name }}-$file"; done
+        for file in *.gz; do mv "$file" "${{ env.FILE_DATE }}-${{ github.ref_name }}${{ env.CONFIG_SUFFIX }}-$file"; done
         cp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/linux*/.config kernel.config
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
@@ -334,7 +347,7 @@ jobs:
         name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }} ${{ github.ref_name }}
         commit: ${{ github.sha }}
         allowUpdates: true
-        tag: ${{ env.TAG_DATE }}-${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}
+        tag: ${{ env.TAG_DATE }}-${{ github.ref_name }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
