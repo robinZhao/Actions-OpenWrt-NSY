@@ -61,7 +61,7 @@ env:
 
 jobs:
   Build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       COMMIT_AUTHOR: ${{ steps.clone.outputs.COMMIT_AUTHOR }}
@@ -146,23 +146,14 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         df -hT
-        echo "------------------------------- 清理Docker镜像和软件 -------------------------------"
-        docker rmi `docker images -q`
-        docker image prune -a -f
-        sudo -E systemctl daemon-reload
-        sudo -E apt-get -y purge azure-cli ghc* zulu* firefox google* dotnet* powershell openjdk* adoptopenjdk* php* mongodb* dotnet* moby* snapd* android* || true
-        sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
-        echo "------------------------------- 更新并安装依赖 -------------------------------"
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc $AGENT_TOOLSDIRECTORY
+        echo "------------------------------- 安装依赖 -------------------------------"
+
         sudo -E apt-get -qq update
-        sudo -E apt-get -y install llvm
-        sudo -E apt-get -qq install $(curl -fsSL is.gd/depends_ubuntu_2204)
-        wget https://bootstrap.pypa.io/pip/3.6/get-pip.py
-        sudo python3 get-pip.py
-        sudo rm -rf get-pip.py
-        sudo pip install pyelftools
-        sudo bash -c 'bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)'
+        sudo -E apt-get -y install build-essential clang flex bison g++ gawk \
+        gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+        python3-setuptools rsync swig unzip zlib1g-dev file wget \
+        libpython3-dev python3 python3-pip python3-cryptography python3-docutils \
+        python3-ply python3-pyelftools python3-requests 
 
         echo "------------------------------- 设置工作目录及时区 -------------------------------"
         sudo timedatectl set-timezone "$TZ"
