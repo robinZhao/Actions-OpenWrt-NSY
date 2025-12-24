@@ -7,6 +7,7 @@
 git clone https://github.com/destan19/OpenAppFilter.git  -b v6.1.6   package/OpenAppFilter
 
 # 修改 feed 软件源
+sed -i -E "s|git\.openwrt\.org/\w+/|github.com/openwrt/|"  feeds.conf.default
 #sed -i 's|https://git.openwrt.org/feed|https://github.com/openwrt|g' feeds.conf.default
 
 # 追加 feed 软件源
