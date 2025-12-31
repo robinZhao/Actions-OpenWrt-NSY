@@ -1,0 +1,16 @@
+#!/bin/sh
+uci -q batch <<-EOF
+		set system.@system[0].timezone="CST-8"
+		set system.@system[0].zonename="Asia/Shanghai"
+		delete system.ntp.server
+		add_list system.ntp.server="ntp1.aliyun.com"
+		add_list system.ntp.server="ntp.tencent.com"
+		add_list system.ntp.server="ntp.ntsc.ac.cn"
+		add_list system.ntp.server="cn.ntp.org.cn"
+		commit system
+EOF
+
+[ -f /etc/opkg/distfeeds.conf ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt/_' /etc/opkg/distfeeds.conf
+[ -f /etc/apk/repositories.d/distfeeds.list ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt/_' /etc/apk/repositories.d/distfeeds.list
+
+exit 0

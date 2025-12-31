@@ -122,16 +122,18 @@ for cfg in $CONFIG_PATTERN; do
     else
         echo "[保持] $cfg: 配置已存在"
     fi
+    echo "CONFIG_ROCKCHIP_CPUINFO=y" >> $cfg
 done
 
 # 添加机型
 
 # 增加nsy_g68-plus
 echo -e "\\ndefine Device/nsy_g68-plus
+  \$(Device/rk3568)
   DEVICE_VENDOR := NSY
   DEVICE_MODEL := G68-PLUS
   SOC := rk3568
-  DEVICE_DTS := rockchip/rk3568-nsy-g68-plus
+  DEVICE_DTS := rk3568-nsy-g68-plus
   UBOOT_DEVICE_NAME := nsy-g68-plus-rk3568
   BOOT_FLOW := pine64-img
   DEVICE_PACKAGES := kmod-switch-rtl8367b
@@ -141,10 +143,11 @@ TARGET_DEVICES += nsy_g68-plus" >> target/linux/rockchip/image/armv8.mk
 
 # 增加nsy_g16-plus
 echo -e "\\ndefine Device/nsy_g16-plus
+  \$(Device/rk3568)
   DEVICE_VENDOR := NSY
   DEVICE_MODEL := G16-PLUS
   SOC := rk3568
-  DEVICE_DTS := rockchip/rk3568-nsy-g16-plus
+  DEVICE_DTS := rk3568-nsy-g16-plus
   UBOOT_DEVICE_NAME := nsy-g16-plus-rk3568
   BOOT_FLOW := pine64-img
   DEVICE_PACKAGES := kmod-mt7615-firmware kmod-switch-rtl8367b wpad-openssl
@@ -154,10 +157,11 @@ TARGET_DEVICES += nsy_g16-plus" >> target/linux/rockchip/image/armv8.mk
 
 # 增加bdy_g18-pro
 echo -e "\\ndefine Device/bdy_g18-pro
+  \$(Device/rk3568)
   DEVICE_VENDOR := BDY
   DEVICE_MODEL := G18-PRO
   SOC := rk3568
-  DEVICE_DTS := rockchip/rk3568-bdy-g18-pro
+  DEVICE_DTS := rk3568-bdy-g18-pro
   UBOOT_DEVICE_NAME := bdy-g18-pro-rk3568
   BOOT_FLOW := pine64-img
   DEVICE_PACKAGES := kmod-mt7615-firmware kmod-switch-rtl8367b wpad-openssl

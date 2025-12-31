@@ -1,0 +1,159 @@
+Index: linux-6.12.62/drivers/net/dsa/realtek/rtl8365mb.c
+===================================================================
+--- a/drivers/net/dsa/realtek/rtl8365mb.c
++++ b/drivers/net/dsa/realtek/rtl8365mb.c
+@@ -313,6 +313,8 @@
+  * fetch atomically. Three seconds should be a good enough polling interval.
+  */
+ #define RTL8365MB_STATS_INTERVAL_JIFFIES	(3 * HZ)
++//0到9按位或
++#define RTL8367S_PORTS_ALL	0x3FF
+ 
+ enum rtl8365mb_mib_counter_index {
+ 	RTL8365MB_MIB_ifInOctets,
+@@ -1537,6 +1539,136 @@ static void rtl8365mb_get_stats64(struct
+ 	spin_unlock(&p->stats_lock);
+ }
+ 
++
++static int reg_rmw(struct realtek_priv *priv, u32 reg,
++							 u32 mask, u32 val)
++{
++	unsigned int tmp;
++	int ret;
++
++	ret = regmap_read(priv->map, reg, &tmp);
++	if (ret)
++		return ret;
++
++	tmp &= ~mask;
++	tmp |= (val & mask);
++
++	return regmap_write(priv->map, reg, tmp);
++}
++
++static int rtl8367S_led_group_set_ports(struct realtek_priv *priv,
++									   unsigned int group, u16 port_mask)
++{
++	u32 reg;
++	u32 s;
++
++
++	port_mask &= 0xff;
++	s = (group % 2) * 8;
++	reg = 0x1b24 + (group / 2);
++
++	reg_rmw(priv, reg, (0xff << s), port_mask << s);
++
++	return 0;
++}
++
++static int rtl8367S_led_group_set_mode(struct realtek_priv *priv,
++									  unsigned int mode)
++{
++	u16 mask;
++	u16 set;
++
++
++	mode &= 0x3;
++
++	mask = (0x3 << 12) | BIT(14);
++	set = (mode << 12) | BIT(14);
++
++	reg_rmw(priv, 0x1b03, mask, set);
++
++	return 0;
++}
++
++static int rtl8367S_led_op_select_parallel(struct realtek_priv *priv)
++{
++
++
++	//REG_WR(priv, 0x1b00, 0x1472);
++	reg_rmw(priv, 0x1b00,BIT(0),0x0); //LEDOP_PARALLEL
++	reg_rmw(priv, 0x1b26, BIT(0),0x0); //Disable serial CLK mode
++	reg_rmw(priv, 0x1b26, BIT(1),0x0); //Disable serial DATA mode
++	return 0;
++}
++
++static int rtl8367S_led_blinkrate_set(struct realtek_priv *priv, unsigned int rate)
++{
++	u16 mask;
++	u16 set;
++
++
++	mask = 0x7 << 1;
++	set = (rate & 0x7) << 1;
++	reg_rmw(priv, 0x1b02, mask, set);
++
++	return 0;
++}
++
++
++static int rtl8367S_led_group_set_config(struct realtek_priv *priv,
++										unsigned int led, unsigned int cfg)
++{
++	u16 mask;
++	u16 set;
++
++
++	mask = (0xf << (led * 4)) | BIT(14);
++	set = (cfg & 0xf) << (led * 4);
++
++	reg_rmw(priv, 0x1b03, mask, set);
++	return 0;
++}
++
++static void rtl8365mb_init_leds(struct realtek_priv *priv)
++{
++	rtl8367S_led_group_set_ports(priv, 0, RTL8367S_PORTS_ALL); //初始化端口led
++	rtl8367S_led_group_set_mode(priv, 0);			//设置模式为0
++	/*  set	  led0	led1   led2
++	mode 0	00   0010  0011  0100
++	mode 1	01   0110  0111  1000
++	mode 2	10   0001  0110  1001
++	mode 3	11   1000  0110  0111*/
++	rtl8367S_led_op_select_parallel(priv);
++	//1:scan mode 1471, 2:parallel mode 1472, 3:mdx mode (serial mode) 14F7
++
++	rtl8367S_led_blinkrate_set(priv, 1);
++	//blinkRate | Support 6 blink rates LED blink rate at 43ms, 84ms, 120ms, 170ms, 340ms and 670ms
++	//43ms 0,84ms 1 ,120ms 2,170ms 3, 340ms 4,670ms 5
++
++	rtl8367S_led_group_set_config(priv, 0, 2);
++	//set led0 mode 2
++	rtl8367S_led_group_set_config(priv, 1, 2);
++	//set led1 mode 2
++	rtl8367S_led_group_set_config(priv, 2, 2);
++	//set led2 mode
++	/*  0000		LED_Off
++		0001		Dup/Col
++		0010		Link/Act
++		0011		Spd1000
++		0100		Spd100
++		0101		Spd10
++		0110		Spd1000/Act
++		0111		Spd100/Act
++		1000		Spd10/Act
++		1001		Spd100 (10)/Act
++		1010		Fiber
++		1011		Fault
++		1100		Link/Rx
++		1101		Link/Tx
++		1110		Master
++		1111		Act
++	*/
++}
++
+ static void rtl8365mb_stats_setup(struct realtek_priv *priv)
+ {
+ 	struct rtl8365mb *mb = priv->chip_data;
+@@ -2024,6 +2156,8 @@ static int rtl8365mb_setup(struct dsa_sw
+ 	/* Start statistics counter polling */
+ 	rtl8365mb_stats_setup(priv);
+ 
++	rtl8365mb_init_leds(priv);
++
+ 	return 0;
+ 
+ out_teardown_irq:

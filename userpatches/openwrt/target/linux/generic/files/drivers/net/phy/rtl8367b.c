@@ -19,6 +19,7 @@
 #include <linux/delay.h>
 #include <linux/skbuff.h>
 #include <linux/rtl8367.h>
+#include <linux/version.h>
 
 #include "rtl8366_smi.h"
 
@@ -758,18 +759,6 @@ static int rtl8367b_extif_set_mode(struct rtl8366_smi *smi, int id,
 		{0xD810, 0x0424},
 		{0x0F80, 0x0001},
 		{0x83F2, 0x002E}
-	};
-
-	unsigned int redData1[][2] =  { 
-		{0x82F1, 0x0500}, 
-		{0xF195, 0x0501}, 
-		{0x31A2, 0x0502}, 
-		{0x796C, 0x0503}, 
-		{0x9728, 0x0504}, 
-		{0x9D85, 0x0423}, 
-		{0xD810, 0x0424}, 
-		{0x0F80, 0x0001}, 
-		{0x83F2, 0x002E} 
 	};
 	unsigned int redData5[][2] =  { 
 		{0x82F1, 0x0500}, 
@@ -2070,7 +2059,7 @@ static int  rtl8367b_probe(struct platform_device *pdev)
 		goto err_free_smi;
 
 	platform_set_drvdata(pdev, smi);
-	
+
 	err = rtl8367b_switch_init(smi);
 	if (err)
 		goto err_clear_drvdata;
@@ -2087,7 +2076,11 @@ static int  rtl8367b_probe(struct platform_device *pdev)
 	return err;
 }
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,11,0)
 static int rtl8367b_remove(struct platform_device *pdev)
+#else
+static void rtl8367b_remove(struct platform_device *pdev)
+#endif
 {
 	struct rtl8366_smi *smi = platform_get_drvdata(pdev);
 
@@ -2098,7 +2091,9 @@ static int rtl8367b_remove(struct platform_device *pdev)
 		kfree(smi);
 	}
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,11,0)
 	return 0;
+#endif
 }
 
 static void rtl8367b_shutdown(struct platform_device *pdev)
@@ -2121,12 +2116,14 @@ MODULE_DEVICE_TABLE(of, rtl8367b_match);
 static struct platform_driver rtl8367b_driver = {
 	.driver = {
 		.name		= RTL8367B_DRIVER_NAME,
+		.owner		= THIS_MODULE,
 #ifdef CONFIG_OF
 		.of_match_table = of_match_ptr(rtl8367b_match),
 #endif
 	},
 	.probe		= rtl8367b_probe,
 	.remove		= rtl8367b_remove,
+	.remove_new		= rtl8367b_remove,
 	.shutdown	= rtl8367b_shutdown,
 };
 
