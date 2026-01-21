@@ -1,0 +1,45 @@
+--- a/package/network/config/firewall/Makefile
++++ b/package/network/config/firewall/Makefile
+@@ -30,7 +30,9 @@
+   SECTION:=net
+   CATEGORY:=Base system
+   TITLE:=OpenWrt C Firewall
+-  DEPENDS:=+libubox +libubus +libuci +libip4tc +IPV6:libip6tc +libiptext +IPV6:libiptext6 +libxtables +kmod-ipt-core +kmod-ipt-conntrack +IPV6:kmod-nf-conntrack6 +kmod-ipt-nat
++  DEPENDS:=+libubox +libubus +libuci +libip4tc +IPV6:libip6tc +libiptext +IPV6:libiptext6 \
++	+libxtables +kmod-ipt-core +kmod-ipt-conntrack +IPV6:kmod-nf-conntrack6 +kmod-ipt-nat \
++	+iptables-mod-fullconenat
+   PROVIDES:=uci-firewall
+   CONFLICTS:=firewall4
+ endef
+--- a/package/network/config/firewall/files/firewall.config
++++ b/package/network/config/firewall/files/firewall.config
+@@ -3,6 +3,8 @@
+ 	option input		REJECT
+ 	option output		ACCEPT
+ 	option forward		REJECT
++	option flow_offloading	1
++	option fullcone		1
+ # Uncomment this line to disable ipv6 rules
+ #	option disable_ipv6	1
+ 
+--- a/package/network/config/firewall4/Makefile
++++ b/package/network/config/firewall4/Makefile
+@@ -23,7 +23,7 @@
+   TITLE:=OpenWrt 4th gen firewall
+   DEPENDS:= \
+ 	+kmod-nft-core +kmod-nft-fib +kmod-nft-offload \
+-	+kmod-nft-nat \
++	+kmod-nft-nat +kmod-nft-fullcone \
+ 	+nftables-json \
+ 	+ucode +ucode-mod-fs +ucode-mod-ubus +ucode-mod-uci
+   EXTRA_DEPENDS:=ucode (>=2022.03.22)
+--- a/package/libs/libnftnl/Makefile
++++ b/package/libs/libnftnl/Makefile
+@@ -20,6 +20,7 @@
+ PKG_LICENSE:=GPL-2.0-or-later
+ PKG_LICENSE_FILES:=COPYING
+ 
++PKG_FIXUP:=autoreconf
+ PKG_INSTALL:=1
+ PKG_BUILD_PARALLEL:=1
+ PKG_BUILD_FLAGS:=lto
