@@ -1,5 +1,5 @@
---- a/htdocs/luci-static/resources/view/firewall/zones.js	2026-01-08 00:00:21.565921670 +0800
-+++ b/htdocs/luci-static/resources/view/firewall/zones.js	2026-01-21 12:18:48.189883588 +0800
+--- a/feeds/luci/applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js	2026-01-08 00:00:21.565921670 +0800
++++ b/feeds/luci/applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js	2026-01-21 12:18:48.189883588 +0800
 @@ -57,6 +57,11 @@
  		};
  
@@ -12,8 +12,8 @@
  
  		var p = [
  			s.option(form.ListValue, 'input', _('Input')),
---- a/po/zh_Hans/firewall.po	2026-01-08 00:00:21.597922509 +0800
-+++ b/po/zh_Hans/firewall.po	2026-01-21 12:18:48.209883968 +0800
+--- a/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-08 00:00:21.597922509 +0800
++++ b/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-21 12:18:48.209883968 +0800
 @@ -330,6 +330,12 @@
  msgid "Enable SYN-flood protection"
  msgstr "启用 SYN-flood 防御"
