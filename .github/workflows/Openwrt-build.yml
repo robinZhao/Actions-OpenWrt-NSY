@@ -54,7 +54,10 @@ on:
         default: false
         type: boolean
 
-          
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: openwrt
@@ -393,7 +396,7 @@ jobs:
 
     - name: 上传发布固件
       if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.20.0
       with:
         name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}${{ env.SWITCH_TYPE }}
         commit: ${{ github.sha }}
