@@ -27,7 +27,7 @@ commit https-dns-proxy
 EOF
 
 sed -i '$ a\net.netfilter.nf_conntrack_max=65535' /etc/sysctl.d/11-nf-conntrack.conf
-[ -f /etc/opkg/distfeeds.conf ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt_' /etc/opkg/distfeeds.conf
-[ -f /etc/apk/repositories.d/distfeeds.list ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt_' /etc/apk/repositories.d/distfeeds.list
+[ -f /etc/opkg/distfeeds.conf ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
+[ -f /etc/apk/repositories.d/distfeeds.list ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/apk/repositories.d/distfeeds.list
 
 exit 0
