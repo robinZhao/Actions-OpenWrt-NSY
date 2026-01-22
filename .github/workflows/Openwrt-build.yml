@@ -181,7 +181,8 @@ jobs:
         gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
         python3-setuptools rsync swig unzip zlib1g-dev file wget \
         libpython3-dev python3 python3-pip python3-cryptography python3-docutils \
-        python3-ply python3-pyelftools python3-requests  clang llvm
+        python3-ply python3-pyelftools python3-requests python3-socks python3-unidecode \
+        clang llvm jq quilt
 
         echo "------------------------------- 设置工作目录及时区 -------------------------------"
         sudo timedatectl set-timezone "$TZ"
