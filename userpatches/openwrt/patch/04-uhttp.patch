@@ -1,0 +1,17 @@
+diff --git a/package/network/services/uhttpd/Makefile b/package/network/services/uhttpd/Makefile
+index 6ec45bb5e9..358de3403e 100644
+--- a/package/network/services/uhttpd/Makefile
++++ b/package/network/services/uhttpd/Makefile
+@@ -12,9 +12,9 @@ PKG_RELEASE:=1
+ 
+ PKG_SOURCE_PROTO:=git
+ PKG_SOURCE_URL=$(PROJECT_GIT)/project/uhttpd.git
+-PKG_SOURCE_DATE:=2025-10-03
+-PKG_SOURCE_VERSION:=ebb92e6b339b88bbc6b76501b6603c52d4887ba1
+-PKG_MIRROR_HASH:=2d00da72db0ec08132bb169f2bad0b153bd998ea1eee0700b4ec01e65c35127d
++PKG_SOURCE_DATE:=2025-12-24
++PKG_SOURCE_VERSION:=506e24987b97fbc866005bfb71316bd63601a1ef
++PKG_MIRROR_HASH:=24481fa0006bd41cb4f1c9cecf42aea51e3dd0f4b913c9bfa0325b4fb1f8047f
+ PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
+ PKG_LICENSE:=ISC
+ 
