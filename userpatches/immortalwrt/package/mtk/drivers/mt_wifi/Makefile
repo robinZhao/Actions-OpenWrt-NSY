@@ -304,4 +304,8 @@ define KernelPackage/mt_wifi/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/mt7916/rebb/MT7916_iPAiLNA_EEPROM.bin $(1)/lib/firmware/e2p;
 endef
 
+CMAKE_OPTIONS:= \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 
+
+
 $(eval $(call KernelPackage,mt_wifi))

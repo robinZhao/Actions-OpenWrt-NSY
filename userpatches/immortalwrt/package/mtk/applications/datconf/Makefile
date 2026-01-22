@@ -54,7 +54,8 @@ TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
 TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib
 
 CMAKE_OPTIONS = \
-        -DLUAPATH=/usr/lib/lua
+        -DLUAPATH=/usr/lib/lua \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 
 
 
 define Package/libkvcutil/install

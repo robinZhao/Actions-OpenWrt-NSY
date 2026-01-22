@@ -27,7 +27,8 @@ commit https-dns-proxy
 EOF
 
 sed -i '$ a\net.netfilter.nf_conntrack_max=65535' /etc/sysctl.d/11-nf-conntrack.conf
-[ -f /etc/opkg/distfeeds.conf ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt_' /etc/opkg/distfeeds.conf
-[ -f /etc/apk/repositories.d/distfeeds.list ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.cloud.tencent.com/openwrt_' /etc/apk/repositories.d/distfeeds.list
+
+## set key_type to dsa resolve uhttpd crash
+uci set uhttpd.defaults.key_type='dsa'
 
 exit 0

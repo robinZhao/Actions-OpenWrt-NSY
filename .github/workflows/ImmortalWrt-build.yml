@@ -17,28 +17,26 @@ on:
       BRANCH:
         description: '系统版本 (带 .y 匹配最新 tag)'
         required: true
-        default: 'v25.12.y'
+        default: 'openwrt-25.12'
         type: choice
         options:
-          - main
+          - master
           - openwrt-25.12
-          - v25.12.y
-          - v25.12.0-rc1
-          - v25.12.0-rc2
+
 
       CONFIG:
         description: '配置文件'
         required: true
-        default: '_mini_open_wifi'
+        default: '_all_in'
         type: choice
         options:
-          - ''
+          - '_all_in'
           - _mini_mtk_wifi
           - _mini_open_wifi
 
       DSA:
         description: 'Enable Dsa Switch Artifact'
-        require: true
+        required: true
         default: false
         type: boolean
       
@@ -54,11 +52,14 @@ on:
         default: false
         type: boolean
 
-          
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: immortalwrt
-  REPO_BRANCH: ${{ inputs.BRANCH || 'openwrt-24.10.y'}}
+  REPO_BRANCH: ${{ inputs.BRANCH || 'openwrt-25.12'}}
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'immortalwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}${{ inputs.CONFIG || '_mini_mtk_wifi'}}.config
   CONFIG_SUFFIX: ${{ inputs.CONFIG || '_mini_mtk_wifi'}}
@@ -69,13 +70,15 @@ env:
   UPLOAD_BIN_DIR: false
   FIRMWARE_RELEASE: true
   FIRMWARE_TAG: ${{ inputs.SYSTEM || 'immortalwrt'}}-${{ inputs.BOARD || 'g68-plus'}}
-  SWITCH_TYPE: ${{ inputs.DSA && 'dsa' || 'swconfig'}}
+  SWITCH_TYPE: ${{ inputs.DSA && '-dsa' || '-swconfig' }}
   TZ: Asia/Shanghai
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  SIGN_KEY: ${{ secrets.PRIVATE_SIGN_KEY }}
+  SIGN_PUB_KEY: ${{ secrets.PUBLIC_SIGN_KEY }}
 
 jobs:
   Build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       COMMIT_AUTHOR: ${{ steps.clone.outputs.COMMIT_AUTHOR }}
@@ -151,18 +154,33 @@ jobs:
           echo "用户选择了固定版本: ${REPO_BRANCH}"
         fi
 
+        if ${{ inputs.CONFIG == '_all_in'}}; then
+          SWITCH_TYPE=''
+          echo "SWITCH_TYPE=${SWITCH_TYPE}" >> $GITHUB_ENV
+        fi
+
+
         # 将最终确定的版本号输出到 GITHUB_ENV，供后续步骤使用
         echo "最终选择的版本是: ${REPO_BRANCH}"
         echo "REPO_BRANCH=${REPO_BRANCH}" >> $GITHUB_ENV
+
+        echo SWITCH_TYPE=${SWITCH_TYPE}
+        echo dsa=${{ inputs.CONFIG != '_all_in' && inputs.DSA }}
 
     - name: 初始化环境
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
         df -hT
-        echo "------------------------------- 更新并安装依赖 -------------------------------"
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc $AGENT_TOOLSDIRECTORY
-        sudo bash -c 'bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)'
+        echo "------------------------------- 安装依赖 -------------------------------"
+
+        sudo -E apt-get -qq update
+        sudo -E apt-get -y install build-essential clang flex bison g++ gawk \
+        gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+        python3-setuptools rsync swig unzip zlib1g-dev file wget \
+        libpython3-dev python3 python3-pip python3-cryptography python3-docutils \
+        python3-ply python3-pyelftools python3-requests python3-socks python3-unidecode \
+        clang llvm jq quilt
 
         echo "------------------------------- 设置工作目录及时区 -------------------------------"
         sudo timedatectl set-timezone "$TZ"
@@ -232,7 +250,7 @@ jobs:
         prefix: ${{ env.OPENWRT_PATH }}
 
     - name: 应用dsa
-      if: ${{ inputs.DSA }}
+      if: ${{ inputs.CONFIG != '_all_in' && inputs.DSA }}
       run: |
         [ -e $GITHUB_WORKSPACE/dsa ] && cp -r $GITHUB_WORKSPACE/dsa/* $GITHUB_WORKSPACE/userpatches/$SYSTEM/
     
@@ -255,14 +273,13 @@ jobs:
         sudo chmod -R +w ./
         # 复制自定义机型配置文件到源码根目录
         chmod -R 775 $GITHUB_WORKSPACE/userpatches/$SYSTEM/
-        rsync -av --progress $GITHUB_WORKSPACE/userpatches/$SYSTEM/ $OPENWRT_PATH/
+        rsync -a $GITHUB_WORKSPACE/userpatches/$SYSTEM/ $OPENWRT_PATH/
         # cp --preserve=all -r $GITHUB_WORKSPACE/userpatches/$SYSTEM/* $OPENWRT_PATH/
         
         # 复制
         # [ -e files ] && mv files $OPENWRT_PATH/files
         # 覆盖文件
         [ -e $GITHUB_WORKSPACE/userpatches/$SYSTEM/override-${{ env.REPO_BRANCH }} ] && cp -r $GITHUB_WORKSPACE/userpatches/$SYSTEM/override-${{ env.REPO_BRANCH }}/* $OPENWRT_PATH/
-
         # 加载自定义配置
         chmod +x $DIY_P2_SH
         cd $OPENWRT_PATH
@@ -272,6 +289,11 @@ jobs:
         # chmod +x $GITHUB_WORKSPACE/scripts/*.sh
         # 下载 clash core
         # $GITHUB_WORKSPACE/scripts/preset-clash-core.sh $CLASH_KERNEL
+        #copy key
+        echo -e "$SIGN_KEY" >> $OPENWRT_PATH/private-key.pem
+        echo -e "$SIGN_PUB_KEY" >> $OPENWRT_PATH/public-key.pem
+        # 清除缓存目录,否则新增的mk文件不生效
+        rm -rf $OPENWRT_PATH/tmp
 
     - name: 加载配置文件
       id: load-config
@@ -282,7 +304,7 @@ jobs:
     
     - name: 设置CONFIG_ALL_KMODS
       id: set-all-kmods
-      if: ${{ inputs.ALL_KMODS }}
+      if: ${{ inputs.CONFIG != '_all_in' && inputs.ALL_KMODS }}
       run: |
           cat userpatches/${SYSTEM}/defconfig/packages.config >> $OPENWRT_PATH/.config
 
@@ -300,7 +322,6 @@ jobs:
       id: package
       run: |
         cd $OPENWRT_PATH
-        make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -318,6 +339,25 @@ jobs:
         echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         echo "TAG_DATE=$(date +"%Y.%m.%d-%H.%M")" >> $GITHUB_ENV
         echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+    
+    - name: make-image
+      if: ${{ inputs.CONFIG == '_all_in' }}
+      id: mkimage
+      run: |
+        cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/openwrt-imagebuilder*
+        cp -rp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/apk/repositories.d/distfeeds.list ./repositories
+        cp -rp $GITHUB_WORKSPACE/image-builder/* ./
+        chmod +x *.sh
+        ./make_no_wifi_dsa.sh
+        ./make_no_wifi_sw.sh
+        ./make_wifi_op_sw.sh
+        ./make_wifi_op_dsa.sh
+        ./make_wifi_mt_sw.sh
+        ./make_wifi_mt_dsa.sh
+        cd bin/targets/rockchip/armv8/
+        for file in *-sysupgrade.img.gz; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}-$file"; done
+        cp -rp $OPENWRT_PATH/staging_dir/target-aarch64_generic_musl/image/*-u-boot-rockchip.bin $OPENWRT_PATH/bin/
+
 
     - name: 检查空间使用情况
       if: (!cancelled())
@@ -335,14 +375,14 @@ jobs:
       run: |
         cd $OPENWRT_PATH/bin/targets/rockchip/armv8/
         cat sha256sums
-        for file in *.gz *.zst; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}-${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-$file"; done
+        for file in *.gz *.zst; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-$file"; done
         mv sha256sums *.manifest *.json *.buildinfo $OPENWRT_PATH/bin/
         cd $OPENWRT_PATH/bin/
         cp ../.config build.config
         cp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/linux*/.config kernel.config
         mkdir dist
         mv packages targets dist/
-        tar -zcf ${{ env.FILE_DATE }}-${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-Packages.tar.gz dist --remove-files
+        tar -zcf ${{ env.FILE_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-Packages.tar.gz dist --remove-files
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
@@ -355,12 +395,12 @@ jobs:
 
     - name: 上传发布固件
       if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.20.0
       with:
-        name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }} ${{ env.SWITCH_TYPE }}
+        name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}${{ env.SWITCH_TYPE }}
         commit: ${{ github.sha }}
         allowUpdates: true
-        tag: ${{ env.TAG_DATE }}-${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
+        tag: ${{ env.TAG_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |

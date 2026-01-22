@@ -46,6 +46,9 @@ BOOLEAN g_fgCommand;
 UINT8 g_u1MinPwrlimit[DBDC_BAND_NUM];
 UINT8 g_u1MinPwrlimitperRate[DBDC_BAND_NUM][DATA_TXPOWER_MAX_BW_NUM][DATA_TXPOWER_MAX_MCS_NUM];
 #endif
+#ifdef ACK_CTS_TIMEOUT_SUPPORT
+INT32 set_cck_ofdm_ofdma_tout (RTMP_ADAPTER *pAd, UINT32 timeout, ACK_TIMEOUT_MODE_T ack_mode);
+#endif
 
 INT ComputeChecksum(UINT PIN)
 {

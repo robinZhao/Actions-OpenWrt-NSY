@@ -1,3 +1,18 @@
+--- a/dts/upstream/src/arm64/rockchip/rk356x-base.dtsi	2026-01-12 14:57:48.788862172 +0800
++++ b/dts/upstream/src/arm64/rockchip/rk356x-base.dtsi	2026-01-12 14:57:26.280260373 +0800
+@@ -341,6 +341,12 @@
+ 		status = "disabled";
+ 	};
+ 
++	xpcs: syscon@fda00000 {
++		compatible = "rockchip,rk3568-xpcs", "syscon";
++		reg = <0x0 0xfda00000 0x0 0x200000>;
++		status = "disabled";
++	};
++
+ 	pmugrf: syscon@fdc20000 {
+ 		compatible = "rockchip,rk3568-pmugrf", "syscon", "simple-mfd";
+ 		reg = <0x0 0xfdc20000 0x0 0x10000>;
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
 @@ -87,6 +87,28 @@ dtb-$(CONFIG_ROCKCHIP_RK3368) += \
