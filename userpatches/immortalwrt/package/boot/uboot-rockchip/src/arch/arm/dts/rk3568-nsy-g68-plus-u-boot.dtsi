@@ -6,32 +6,34 @@
 	chosen {
 		stdout-path = &uart2;
 	};
+};
 
-	adc_keys: adc-keys {
-		compatible = "adc-keys";
-		io-channels = <&saradc 0>;
-		io-channel-names = "buttons";
-		keyup-threshold-microvolt = <1800000>;
-		poll-interval = <100>;
-		status = "okay";
-		recovery-key {
+&adc_keys {
+	recovery-key {
 			label = "F12";
 			linux,code = <KEY_F12>;
 			press-threshold-microvolt = <1750>;
-		};
 	};
 };
 
-&saradc {
+&gmac1 {
+	status = "disabled";
+}; 
+
+&gmac0 {
 	status = "okay";
-	vref-supply = <&vcc1v8_adc>;
+	snps,reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	snps,reset-delays-us = <0 20000 1000000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&gmac0_miim &gmac0_tx_bus2 &gmac0_rx_bus2 &gmac0_rgmii_clk &gmac0_rgmii_bus &gmac0_reset>;
+
 };
 
-&sdhci {
-	cap-mmc-highspeed;
-	mmc-ddr-1_8v;
-	mmc-hs200-1_8v;
-	mmc-hs400-1_8v;
-	mmc-hs400-enhanced-strobe;
-	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe>;
+&usb_host0_xhci{
+	dr_mode="otg";
+};
+
+&usb2phy0_otg {
+	status = "okay";
 };

@@ -631,17 +631,17 @@
 +	int tx_status, rx_status;
 +
 +	txp = lb_priv->dma_tx;
-+	tx_status = priv->hw->desc->tx_status(
-+					      &priv->xstats, txp,
-+					      priv->ioaddr);
++	tx_status = stmmac_tx_status(priv, &priv->xstats, txp, priv->ioaddr);
++				//priv->hw->desc->tx_status(&priv->xstats, txp,
++				//priv->ioaddr);
 +	/* Check if the descriptor is owned by the DMA */
 +	if (unlikely(tx_status & tx_dma_own))
 +		return -EBUSY;
 +
 +	rxp = lb_priv->dma_rx;
 +	/* read the status of the incoming frame */
-+	rx_status = priv->hw->desc->rx_status(
-+					      &priv->xstats, rxp);
++	rx_status = stmmac_rx_status(priv, &priv->xstats, rxp);
++				//priv->hw->desc->rx_status(&priv->xstats, rxp);
 +	if (unlikely(rx_status & dma_own))
 +		return -EBUSY;
 +
@@ -1080,7 +1080,7 @@
 +	u32 chan = 0;
 +	int ret = 0;
 +
-+	ret = stmmac_reset(priv, priv->ioaddr);
++	ret = stmmac_do_callback(priv, dma, reset, priv->ioaddr);
 +	if (ret) {
 +		dev_err(priv->device, "Failed to reset the dma\n");
 +		return ret;
