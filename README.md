@@ -23,6 +23,12 @@
 ## 固件特色 [![](https://img.shields.io/badge/-本项目固件特色-FFFFFF.svg)](#固件特色-)
 1. 原汁原味官方openwrt系统，除适配外没有任何改造
 
+## 固件名称说明
+- sw  表示 swconfig交换机
+- dsa 表示 dsa交换机
+- op  表示 openwrt开源wifi驱动
+- mt  表示 mediatek闭源wifi驱动
+- no  表示 无wifi
 
 ## 特别提示 [![](https://img.shields.io/badge/-个人免责声明-FFFFFF.svg)](#特别提示-)
 
