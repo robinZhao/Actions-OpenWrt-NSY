@@ -26,6 +26,9 @@ set https-dns-proxy.@https-dns-proxy[-1].isten_port='5054'
 commit https-dns-proxy
 EOF
 
+## set key_type to dsa resolve uhttpd crash
+uci set uhttpd.defaults.key_type='dsa'
+
 sed -i '$ a\net.netfilter.nf_conntrack_max=65535' /etc/sysctl.d/11-nf-conntrack.conf
 [ -f /etc/opkg/distfeeds.conf ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
 [ -f /etc/apk/repositories.d/distfeeds.list ] && sed -i.bak 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/apk/repositories.d/distfeeds.list

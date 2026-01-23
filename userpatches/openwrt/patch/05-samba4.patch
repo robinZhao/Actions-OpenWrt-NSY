@@ -1,0 +1,13 @@
+diff --git a/feeds/packages/net/samba4/files/smb.conf.template b/feeds/packages/net/samba4/files/smb.conf.template
+index ebc18e3..56b88f1 100644
+--- a/feeds/packages/net/samba4/files/smb.conf.template
++++ b/feeds/packages/net/samba4/files/smb.conf.template
+@@ -4,6 +4,8 @@
+ 	server string = |DESCRIPTION|
+ 	unix charset = |CHARSET|
+ 	workgroup = |WORKGROUP|
++	preferred master = yes
++	domain master = yes
+ 
+ 	## This global parameter allows the Samba admin to limit what interfaces on a machine will serve SMB requests.
+ 	bind interfaces only = yes

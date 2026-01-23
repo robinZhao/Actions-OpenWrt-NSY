@@ -248,7 +248,7 @@ jobs:
       with:
         # 检查是否缓存 ccache
         ccache: false
-        mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ inputs.CONFIG }}
+        mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-_all_in
         prefix: ${{ env.OPENWRT_PATH }}
 
     - name: 应用dsa
