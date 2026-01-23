@@ -98,6 +98,9 @@ for cfg in $CONFIG_PATTERN; do
     [ -f "$cfg" ] || continue
     echo CONFIG_KEYBOARD_ADC=y >> $cfg
     echo CONFIG_ROCKCHIP_SARADC=y >> $cfg
+    #不设置时会编译错误
+    echo "# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set" >> $cfg
+    echo "# CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is not set" >> $cfg
     #sed -i 's/^# CONFIG_SWCONFIG is not set$/CONFIG_SWCONFIG=y/' "$cfg"
 done
 
