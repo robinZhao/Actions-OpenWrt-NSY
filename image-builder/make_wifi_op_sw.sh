@@ -1,3 +1,6 @@
+mark_package(){
+    ls packages/|grep ^$1-[0-9]|sed "s/$1-/$1=/"|sed "s/\.apk//"
+}
 make image PROFILE=nsy_g68-plus PACKAGES="kmod-switch-rtl8367b swconfig \
 -kmod-dsa -kmod-phy-realtek -kmod-dsa-realtek -kmod-dsa-rtl8365mb \
 kmod-cfg80211 kmod-mac80211 kmod-mt76-connac kmod-mt76-core kmod-mt7915e kmod-mt7916-firmware  wpad-mesh-openssl  wifi-scripts \
@@ -5,10 +8,12 @@ iwinfo wireless-tools wireless-regdb \
 kmod-button-hotplug kmod-leds-gpio \
 kmod-fs-vfat kmod-fs-ntfs3 kmod-fs-ext4 kmod-fs-exfat \
 luci luci-ssl-openssl luci-compat luci-i18n-base-zh-cn \
-luci-i18n-firewall-zh-cn luci-app-samba4 luci-i18n-samba4-zh-cn luci-app-upnp \
+luci-app-samba4 luci-i18n-samba4-zh-cn luci-app-upnp \
 luci-i18n-upnp-zh-cn luci-app-https-dns-proxy luci-i18n-https-dns-proxy-zh-cn \
 luci-app-adblock luci-i18n-adblock-zh-cn luci-app-wol luci-i18n-wol-zh-cn kmod-tun \
 luci-i18n-package-manager-zh-cn luci-i18n-attendedsysupgrade-zh-cn \
+-luci-i18n-firewall-zh-cn -luci-app-firewall -firewall4 -luci-base \
+$(mark_package 'luci-i18n-firewall-zh-cn') $(mark_package 'luci-app-firewall')  $(mark_package 'firewall4') $(mark_package 'luci-base') \
 zerotier tcpdump block-mount ca-certificates \
 openssl-util \
 kmod-oaf luci-app-oaf luci-i18n-oaf-zh-cn openssh-sftp-server -libustream-mbedtls libustream-openssl20201210 -apk-mbedtls apk-openssl \
