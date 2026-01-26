@@ -1,5 +1,8 @@
 #!/bin/bash
 
+wget https://downloads.openwrt.org/releases/packages-25.12/aarch64_generic/feeds.conf -O feeds.conf.default 
+sed -i /openwrt\\/openwrt/d feeds.conf.default
+cat feeds.conf.default
 # 定时限速插件
 #git clone --depth=1 https://github.com/sirpdboy/luci-app-eqosplus package/luci-app-eqosplus
 

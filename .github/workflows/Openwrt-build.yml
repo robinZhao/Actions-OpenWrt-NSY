@@ -359,7 +359,7 @@ jobs:
         ./make_wifi_mt_sw.sh
         ./make_wifi_mt_dsa.sh
         cd bin/targets/rockchip/armv8/
-        for file in *-sysupgrade.img.gz; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}-$file"; done
+        for file in *-sysupgrade.img.gz; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}-fullcone-$file"; done
         cp -rp $OPENWRT_PATH/staging_dir/target-aarch64_generic_musl/image/*-u-boot-rockchip.bin $OPENWRT_PATH/bin/
 
 
