@@ -1267,6 +1267,7 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
 	struct rtl8367_platform_data *pdata;
 	int err;
 	int i;
+	bool leds_disabled;
 
 	pdata = smi->parent->platform_data;
 
@@ -1302,6 +1303,7 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
 
 
         	  /* setup LEDs */
+			  leds_disabled = of_property_read_bool(smi->parent->of_node,"realtek,disable-leds");
       		  err = rtl8367S_led_group_set_ports(smi, 0, RTL8367S_PORTS_ALL); //初始化端口led
 
         	  err = rtl8367S_led_group_set_mode(smi, 0);			//设置模式为0
@@ -1313,15 +1315,15 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
         	  err = rtl8367S_led_op_select_parallel(smi);
 		  //1:scan mode 1471, 2:parallel mode 1472, 3:mdx mode (serial mode) 14F7
 
-        	  err = rtl8367S_led_blinkrate_set(smi, 1);
+        	  err = rtl8367S_led_blinkrate_set(smi, 2);
 		  //blinkRate | Support 6 blink rates LED blink rate at 43ms, 84ms, 120ms, 170ms, 340ms and 670ms
 		  //43ms 0,84ms 1 ,120ms 2,170ms 3, 340ms 4,670ms 5
 
-        	  err = rtl8367S_led_group_set_config(smi, 0, 2);
+          err = rtl8367S_led_group_set_config(smi, 0, leds_disabled?0:12);
 		  //set led0 mode 2
-		  err = rtl8367S_led_group_set_config(smi, 1, 2);
+		  err = rtl8367S_led_group_set_config(smi, 1, leds_disabled?0:13);
 		  //set led1 mode 2
-		  err = rtl8367S_led_group_set_config(smi, 2, 2);
+		  err = rtl8367S_led_group_set_config(smi, 2, leds_disabled?0:2);
 		  //set led2 mode 
 		  /*  0000        LED_Off                
 		      0001        Dup/Col                

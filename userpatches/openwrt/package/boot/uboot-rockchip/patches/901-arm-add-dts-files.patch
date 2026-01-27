@@ -1,12 +1,20 @@
---- a/dts/upstream/src/arm64/rockchip/rk356x-base.dtsi	2026-01-12 14:57:48.788862172 +0800
-+++ b/dts/upstream/src/arm64/rockchip/rk356x-base.dtsi	2026-01-12 14:57:26.280260373 +0800
-@@ -341,6 +341,12 @@
+--- a/dts/upstream/src/arm64/rockchip/rk356x.dtsi	2026-01-12 14:57:48.788862172 +0800
++++ b/dts/upstream/src/arm64/rockchip/rk356x.dtsi	2026-01-12 14:57:26.280260373 +0800
+@@ -341,6 +341,20 @@
  		status = "disabled";
  	};
  
 +	xpcs: syscon@fda00000 {
 +		compatible = "rockchip,rk3568-xpcs", "syscon";
 +		reg = <0x0 0xfda00000 0x0 0x200000>;
++		status = "disabled";
++	};
++	rng: rng@fe388000 {
++		compatible = "rockchip,rk3568-rng";
++		reg = <0x0 0xfe388000 0x0 0x4000>;
++		clocks = <&cru CLK_TRNG_NS>, <&cru HCLK_TRNG_NS>;
++		clock-names = "core", "ahb";
++		resets = <&cru SRST_TRNG_NS>;
 +		status = "disabled";
 +	};
 +

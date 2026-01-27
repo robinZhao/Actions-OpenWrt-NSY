@@ -114,15 +114,15 @@
 +	rtl8367S_led_op_select_parallel(priv);
 +	//1:scan mode 1471, 2:parallel mode 1472, 3:mdx mode (serial mode) 14F7
 +
-+	rtl8367S_led_blinkrate_set(priv, 1);
++	rtl8367S_led_blinkrate_set(priv, 2);
 +	//blinkRate | Support 6 blink rates LED blink rate at 43ms, 84ms, 120ms, 170ms, 340ms and 670ms
 +	//43ms 0,84ms 1 ,120ms 2,170ms 3, 340ms 4,670ms 5
 +
-+	rtl8367S_led_group_set_config(priv, 0, 2);
++	rtl8367S_led_group_set_config(priv, 0, priv->leds_disabled?0:12);
 +	//set led0 mode 2
-+	rtl8367S_led_group_set_config(priv, 1, 2);
++	rtl8367S_led_group_set_config(priv, 1, priv->leds_disabled?0:13);
 +	//set led1 mode 2
-+	rtl8367S_led_group_set_config(priv, 2, 2);
++	rtl8367S_led_group_set_config(priv, 2, priv->leds_disabled?0:2);
 +	//set led2 mode
 +	/*  0000		LED_Off
 +		0001		Dup/Col
