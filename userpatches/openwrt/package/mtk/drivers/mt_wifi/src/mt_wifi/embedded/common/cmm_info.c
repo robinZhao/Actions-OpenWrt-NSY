@@ -16140,7 +16140,7 @@ INT Set_TxBfProfileDataWrite(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		strLen = strlen(value);
 
 		if (strLen & 1) {
-			strncpy(value_T, "0", sizeof(value_T));
+			strscpy(value_T, "0", sizeof(value_T));
 			strncat(value_T, value, strLen);
 			AtoH(value_T, (PCHAR)(&Input[i]), 2);
 			Input[i] = be2cpu16(Input[i]);
@@ -16302,7 +16302,7 @@ between : */
 		str_len = strlen(value);
 
 		if (str_len & 1) {
-			strncpy(value_t, "0", sizeof(value_t));
+			strscpy(value_t, "0", sizeof(value_t));
 			strncat(value_t, value, str_len);
 			AtoH(value_t, (PCHAR)(&input[i]), 2);
 			input[i] = be2cpu16(input[i]);
@@ -16472,7 +16472,7 @@ INT Set_TxBfProfilePnWrite(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		strLen = strlen(value);
 
 		if (strLen & 1) {
-			strncpy(value_T, "0", sizeof(value_T));
+			strscpy(value_T, "0", sizeof(value_T));
 			strncat(value_T, value, strLen);
 			AtoH(value_T, (PCHAR)(&Input[i]), 2);
 			Input[i] = be2cpu16(Input[i]);

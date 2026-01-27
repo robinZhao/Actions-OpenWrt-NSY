@@ -344,7 +344,7 @@ static inline VOID MIListAddHead(MEM_INFO_LIST *MIList, UINT32 Size, VOID *pMemA
 	pEntry->Line = Line;
 	pEntry->pLastPos = 0;
 	pEntry->uPosIdx = 0;
-	strncpy(pEntry->Func, Func, sizeof(pEntry->Func));
+	strscpy(pEntry->Func, Func, sizeof(pEntry->Func));
 	pheadMemEntry = &MIList->pMemAddr[MemIndex];
 	pheadCalEntry = &MIList->pCaller[CallerIdx];
 	
