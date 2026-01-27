@@ -17,12 +17,16 @@ on:
       BRANCH:
         description: '系统版本 (带 .y 匹配最新 tag)'
         required: true
-        default: 'openwrt-25.12'
+        default: 'v24.10.y'
         type: choice
         options:
-          - master
-          - openwrt-25.12
-
+          - main
+          - openwrt-24.10
+          - v24.10.1
+          - v24.10.2
+          - v24.10.3
+          - v24.10.4
+          - v24.10.y
 
       CONFIG:
         description: '配置文件'
