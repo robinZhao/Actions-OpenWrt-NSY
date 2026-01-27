@@ -17,7 +17,7 @@ on:
       BRANCH:
         description: '系统版本 (带 .y 匹配最新 tag)'
         required: true
-        default: 'v25.12.y'
+        default: 'v24.10.y'
         type: choice
         options:
           - main
@@ -27,8 +27,6 @@ on:
           - v24.10.3
           - v24.10.4
           - v24.10.y
-          - v25.12.0-rc1
-          - v25.12.0-rc2
 
       CONFIG:
         description: '配置文件'
@@ -65,7 +63,7 @@ permissions:
 env:
   BOARD: ${{ inputs.BOARD || 'g68-plus'}}
   SYSTEM: openwrt
-  REPO_BRANCH: ${{ inputs.BRANCH || 'v25.12.y'}}
+  REPO_BRANCH: ${{ inputs.BRANCH || 'v24.10.y'}}
   REPO_URL: https://github.com/openwrt/openwrt
   CONFIG_FILE: userpatches/${{ inputs.SYSTEM || 'openwrt'}}/defconfig/${{ inputs.BOARD || 'g68-plus'}}${{ inputs.CONFIG || '_mini_mtk_wifi'}}.config
   CONFIG_SUFFIX: ${{ inputs.CONFIG || '_mini_mtk_wifi'}}
