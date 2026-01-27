@@ -18,8 +18,7 @@
 #include <linux/of_platform.h>
 #include <linux/delay.h>
 #include <linux/skbuff.h>
-#include "rtl8367.h"
-#include <linux/version.h>
+#include <linux/rtl8367.h>
 
 #include "rtl8366_smi.h"
 
@@ -1268,7 +1267,6 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
 	struct rtl8367_platform_data *pdata;
 	int err;
 	int i;
-	bool leds_disabled;
 
 	pdata = smi->parent->platform_data;
 
@@ -1304,7 +1302,6 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
 
 
         	  /* setup LEDs */
-			  leds_disabled = of_property_read_bool(smi->parent->of_node,"realtek,disable-leds");
       		  err = rtl8367S_led_group_set_ports(smi, 0, RTL8367S_PORTS_ALL); //初始化端口led
 
         	  err = rtl8367S_led_group_set_mode(smi, 0);			//设置模式为0
@@ -1316,15 +1313,15 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
         	  err = rtl8367S_led_op_select_parallel(smi);
 		  //1:scan mode 1471, 2:parallel mode 1472, 3:mdx mode (serial mode) 14F7
 
-        	  err = rtl8367S_led_blinkrate_set(smi, 2);
+        	  err = rtl8367S_led_blinkrate_set(smi, 1);
 		  //blinkRate | Support 6 blink rates LED blink rate at 43ms, 84ms, 120ms, 170ms, 340ms and 670ms
 		  //43ms 0,84ms 1 ,120ms 2,170ms 3, 340ms 4,670ms 5
 
-          err = rtl8367S_led_group_set_config(smi, 0, leds_disabled?0:12);
+        	  err = rtl8367S_led_group_set_config(smi, 0, 2);
 		  //set led0 mode 2
-		  err = rtl8367S_led_group_set_config(smi, 1, leds_disabled?0:13);
+		  err = rtl8367S_led_group_set_config(smi, 1, 2);
 		  //set led1 mode 2
-		  err = rtl8367S_led_group_set_config(smi, 2, leds_disabled?0:2);
+		  err = rtl8367S_led_group_set_config(smi, 2, 2);
 		  //set led2 mode 
 		  /*  0000        LED_Off                
 		      0001        Dup/Col                
@@ -2073,7 +2070,7 @@ static int  rtl8367b_probe(struct platform_device *pdev)
 		goto err_free_smi;
 
 	platform_set_drvdata(pdev, smi);
-
+	
 	err = rtl8367b_switch_init(smi);
 	if (err)
 		goto err_clear_drvdata;
@@ -2090,11 +2087,7 @@ static int  rtl8367b_probe(struct platform_device *pdev)
 	return err;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6,11,0)
 static int rtl8367b_remove(struct platform_device *pdev)
-#else
-static void rtl8367b_remove(struct platform_device *pdev)
-#endif
 {
 	struct rtl8366_smi *smi = platform_get_drvdata(pdev);
 
@@ -2105,9 +2098,7 @@ static void rtl8367b_remove(struct platform_device *pdev)
 		kfree(smi);
 	}
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6,11,0)
 	return 0;
-#endif
 }
 
 static void rtl8367b_shutdown(struct platform_device *pdev)
@@ -2130,14 +2121,12 @@ MODULE_DEVICE_TABLE(of, rtl8367b_match);
 static struct platform_driver rtl8367b_driver = {
 	.driver = {
 		.name		= RTL8367B_DRIVER_NAME,
-		.owner		= THIS_MODULE,
 #ifdef CONFIG_OF
 		.of_match_table = of_match_ptr(rtl8367b_match),
 #endif
 	},
 	.probe		= rtl8367b_probe,
 	.remove		= rtl8367b_remove,
-	.remove_new		= rtl8367b_remove,
 	.shutdown	= rtl8367b_shutdown,
 };
 
