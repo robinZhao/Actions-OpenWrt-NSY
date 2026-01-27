@@ -348,8 +348,10 @@ jobs:
       if: ${{ inputs.CONFIG == '_all_in' }}
       id: mkimage
       run: |
-        cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/openwrt-imagebuilder*
-        cp -rp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/apk/repositories.d/distfeeds.list ./repositories
+        cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/*-imagebuilder*
+        cat $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/opkg/distfeeds.conf >> ./repositories.conf
+        # standalone not read repositories
+        sed -i -e 's/^CONFIG_IB_STANDALONE=y$/# CONFIG_IB_STANDALONE is not set/' .config
         cp -rp $GITHUB_WORKSPACE/image-builder/* ./
         chmod +x *.sh
         ./make_no_wifi_dsa.sh
