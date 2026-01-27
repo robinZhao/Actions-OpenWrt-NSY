@@ -1,0 +1,16 @@
+--- a/drivers/net/phy/swconfig_leds.c
++++ b/drivers/net/phy/swconfig_leds.c
+@@ -478,6 +478,13 @@ swconfig_led_work_func(struct work_struct *work)
+ 					sw_trig->link_speed[i] =
+ 						SWCONFIG_LED_PORT_SPEED_1000;
+ 					break;
++				case SWITCH_PORT_SPEED_2500:
++					sw_trig->link_speed[i] =
++                                                SWCONFIG_LED_PORT_SPEED_1000;
++					break;
++				default:
++					sw_trig->link_speed[i] =
++                                                SWCONFIG_LED_PORT_SPEED_NA;
+ 				}
+ 			}
+ 		}

@@ -1,14 +1,14 @@
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-@@ -13,6 +13,7 @@
- #include <linux/phy.h>
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c	2025-04-28 11:13:47.793613847 +0800
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c	2025-04-28 11:54:12.293437935 +0800
+@@ -14,6 +14,7 @@
  #include <linux/phy/phy.h>
  #include <linux/of_net.h>
+ #include <linux/gpio.h>
 +#include <linux/of_mdio.h>
  #include <linux/module.h>
  #include <linux/of.h>
- #include <linux/platform_device.h>
-@@ -248,44 +249,58 @@ static int xpcs_soft_reset(struct rk_pri
+ #include <linux/of_gpio.h>
+@@ -178,44 +179,58 @@ static int xpcs_soft_reset(struct rk_pri
  
  static int xpcs_setup(struct rk_priv_data *bsp_priv, int mode)
  {
