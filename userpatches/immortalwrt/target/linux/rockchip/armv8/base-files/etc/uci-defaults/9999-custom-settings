@@ -27,6 +27,6 @@ commit https-dns-proxy
 EOF
 
 [ -f /etc/sysctl.d/11-nf-conntrack.conf ] && sed -i '$ a\net.netfilter.nf_conntrack_max=65535' /etc/sysctl.d/11-nf-conntrack.conf
-[ -f /etc/samba/smb.conf.template ] && sed -i.bak '/workgroup.*$/a\\tpreferred master = yes;\n\tdomain master = yes;' /etc/samba/smb.conf.template
+[ -f /etc/samba/smb.conf.template ] && sed -i.bak 's/#preferred master = yes/preferred master = yes\n\tdomain master = yes/' /etc/samba/smb.conf.template
 
 exit 0
