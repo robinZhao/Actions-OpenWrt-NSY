@@ -349,9 +349,10 @@ jobs:
       id: mkimage
       run: |
         cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/*-imagebuilder*
-        cat $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/opkg/distfeeds.conf >> ./repositories.conf
+        #cat $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/opkg/distfeeds.conf >> ./repositories.conf
+        #sed -i 's!^src/gz openwrt_core!#src/gz openwrt_core!' repositories.conf
         # standalone not read repositories
-        sed -i -e 's/^CONFIG_IB_STANDALONE=y$/# CONFIG_IB_STANDALONE is not set/' .config
+        # sed -i -e 's/^CONFIG_IB_STANDALONE=y$/# CONFIG_IB_STANDALONE is not set/' .config
         cp -rp $GITHUB_WORKSPACE/image-builder/* ./
         chmod +x *.sh
         ./make_no_wifi_dsa.sh
