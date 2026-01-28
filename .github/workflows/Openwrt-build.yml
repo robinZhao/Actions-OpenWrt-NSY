@@ -350,6 +350,7 @@ jobs:
       run: |
         cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/openwrt-imagebuilder*
         cat $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/opkg/distfeeds.conf >> ./repositories.conf
+        sed -i 's!^src/gz openwrt_core!#src/gz openwrt_core!' repositories.conf
         # standalone not read repositories
         sed -i -e 's/^CONFIG_IB_STANDALONE=y$/# CONFIG_IB_STANDALONE is not set/' .config
         cp -rp $GITHUB_WORKSPACE/image-builder/* ./
