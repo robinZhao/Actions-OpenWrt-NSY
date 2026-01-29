@@ -380,7 +380,7 @@ jobs:
       run: |
         cd $OPENWRT_PATH/bin/targets/rockchip/armv8/
         cat sha256sums
-        for file in *.gz *.zst; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-$file"; done
+        for file in *.gz *.zst; do [ -e "$file" ] || continue; mv "$file" "$OPENWRT_PATH/bin/${{ env.FILE_DATE }}-fullcone${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-$file"; done
         mv sha256sums *.manifest *.json *.buildinfo $OPENWRT_PATH/bin/
         cd $OPENWRT_PATH/bin/
         cp ../.config build.config
