@@ -387,7 +387,7 @@ jobs:
         cp $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/linux*/.config kernel.config
         mkdir dist
         mv packages targets dist/
-        tar -zcf ${{ env.FILE_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-Packages.tar.gz dist --remove-files
+        tar -zcf ${{ env.FILE_DATE }}-fullcone${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-Packages.tar.gz dist --remove-files
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
@@ -402,10 +402,10 @@ jobs:
       if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
       uses: ncipollo/release-action@v1.20.0
       with:
-        name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}${{ env.CONFIG_SUFFIX }}${{ env.SWITCH_TYPE }}
+        name: R${{ env.DATE }} for ${{ env.FIRMWARE_TAG }}–fullcone${{ env.CONFIG_SUFFIX }}${{ env.SWITCH_TYPE }}
         commit: ${{ github.sha }}
         allowUpdates: true
-        tag: ${{ env.TAG_DATE }}${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
+        tag: ${{ env.TAG_DATE }}-fullcone${{ env.SWITCH_TYPE }}${{ env.CONFIG_SUFFIX }}-${{ env.FIRMWARE_TAG }}
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
