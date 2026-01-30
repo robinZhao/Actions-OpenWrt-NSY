@@ -5,9 +5,45 @@ on:
   workflow_dispatch:
 
     inputs:
+      BUILDER:
+        description: image-builder
+        required: true
+        default: https://github.com/robinZhao/Actions-OpenWrt-NSY/releases/download/2026.01.29-22.27_all_in-openwrt-g68-plus/2026.01.29_all_in-openwrt-imagebuilder-25.12.0-rc3-rockchip-armv8.Linux-x86_64.tar.zst
+        type: string
+
+      PACKAGES:
+        description: 软件包
+        required: true
+        default: 'kmod-cfg80211 kmod-mac80211 kmod-mt76-connac kmod-mt76-core kmod-mt7915e kmod-mt7916-firmware  wpad-mesh-openssl  wifi-scripts 
+          iwinfo wireless-tools wireless-regdb 
+          kmod-button-hotplug kmod-leds-gpio 
+          kmod-fs-vfat kmod-fs-ntfs3 kmod-fs-ext4 kmod-fs-exfat 
+          luci luci-ssl-openssl luci-compat luci-i18n-base-zh-cn 
+          luci-i18n-firewall-zh-cn luci-app-samba4 luci-i18n-samba4-zh-cn luci-app-upnp 
+          luci-i18n-upnp-zh-cn luci-app-https-dns-proxy luci-i18n-https-dns-proxy-zh-cn 
+          luci-app-adblock luci-i18n-adblock-zh-cn luci-app-wol luci-i18n-wol-zh-cn kmod-tun 
+          luci-i18n-package-manager-zh-cn luci-i18n-attendedsysupgrade-zh-cn 
+          zerotier tcpdump block-mount ca-certificates openssl-util 
+          kmod-oaf luci-app-oaf luci-i18n-oaf-zh-cn openssh-sftp-server -libustream-mbedtls libustream-openssl -apk-mbedtls apk-openssl'
+        type: string
+
+      OVERFILES:
+        description: '覆盖文件'
+        required: true
+        default: 'sw'
+        type: choice
+        options:
+          - sw
+          - dsa
+
+      SUFFIX:
+        description: '生成后缀'
+        required: false
+        default: ''
+        type: string
 
       TERMINAL:
-        description: '终端调试'
+        description: 终端调试
         required: true
         default: false
         type: boolean
@@ -19,7 +55,7 @@ permissions:
   
 env:
 
-  SDK_URL: https://github.com/robinZhao/Actions-OpenWrt-NSY/releases/download/2026.01.26-16.26_all_in-openwrt-g68-plus/2026.01.26_all_in-openwrt-imagebuilder-25.12.0-rc3-rockchip-armv8.Linux-x86_64.tar.zst
+  SDK_URL: ${{ inputs.BUILDER }}
   TZ: Asia/Shanghai
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   SIGN_KEY: ${{ secrets.PRIVATE_SIGN_KEY }}
@@ -109,12 +145,10 @@ jobs:
         echo -e "$SIGN_PUB_KEY" >> public-key.pem
         echo "SDK_PATH=$PWD" >> $GITHUB_ENV
 
-    - name: ssh连接
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ inputs.TERMINAL }}
 
     - name: 编译packages
       id: compile
+      continue-on-error: true
       run: |
         cd ${{ env.SDK_PATH }}
         downloadurl=$(grep releases include/version.mk|grep -o 'http[^)]*')
@@ -126,20 +160,25 @@ jobs:
         echo $downloadurl/packages/aarch64_generic/telephony/packages.adb >> ./repositories
         echo $downloadurl/packages/aarch64_generic/video/packages.adb >> ./repositories
         # standalone not read repositories
-        sed -i -e 's/^CONFIG_IB_STANDALONE=y$/# CONFIG_IB_STANDALONE is not set/'
         cp -rp $GITHUB_WORKSPACE/image-builder/* ./
+        echo "#!/bin/bash" > mkimage.sh
+        swtype="${{ inputs.SUFFIX }}"
+        SWPACKAGES="kmod-switch-rtl8367b swconfig  -kmod-dsa -kmod-phy-realtek -kmod-dsa-realtek -kmod-dsa-rtl8365mb"
+        if [ $swtype == 'dsa' ];then SWPACKAGES="-kmod-switch-rtl8367b -swconfig  +kmod-dsa +kmod-phy-realtek +kmod-dsa-realtek +kmod-dsa-rtl8365mb"; fi;
+        echo "make image PROFILE=nsy_g68-plus FILES=${{ inputs.OVERFILES }} EXTRA_IMAGE_NAME=${{ inputs.SUFFIX }} PACKAGES=\"${{ inputs.PACKAGES }} ${SWPACKAGES}\"" >> mkimage.sh
+        cat mkimage.sh
         chmod +x *.sh
-        ./make_no_wifi_dsa.sh
-        ./make_no_wifi_sw.sh
-        ./make_wifi_op_sw.sh
-        ./make_wifi_op_dsa.sh
-        ./make_wifi_mt_sw.sh
-        ./make_wifi_mt_dsa.sh
+        ./mkimage.sh
         mkdir bin/dist
         echo "FIRMWARE_PATH=$PWD/bin/dist" >> $GITHUB_ENV
         cd bin/targets/rockchip/armv8/
-        for file in *-sysupgrade.img.gz; do [ -e "$file" ] || continue; mv "$file" "../../../dist/${{ env.FILE_DATE }}-fullcone-$file"; done
+        for file in *-sysupgrade.img.gz; do [ -e "$file" ] || continue; mv "$file" "../../../dist/$(date +"%Y.%m.%d")-$file"; done
         echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: ssh连接
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ inputs.TERMINAL || (steps.compile.outputs.status != 'success') }}
+      
     - name: 上传发布固件
       if: steps.compile.outputs.status == 'success'
       uses: ncipollo/release-action@v1.20.0
