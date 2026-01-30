@@ -15,11 +15,11 @@ define KernelPackage/crypto-hw-rockchip
         +kmod-crypto-sha256 \
         +kmod-crypto-engine
   KCONFIG:= \
-		CONFIG_CRYPTO_SM3_GENERIC=y \
+        CONFIG_CRYPTO_SM3_GENERIC=y \
         CONFIG_CRYPTO_HW=y \
         CONFIG_CRYPTO_DEV_ROCKCHIP \
         CONFIG_CRYPTO_DEV_ROCKCHIP_DEBUG=y \
-		CONFIG_CRYPTO_DEV_ROCKCHIP2 \
+        CONFIG_CRYPTO_DEV_ROCKCHIP2 \
         CONFIG_CRYPTO_DEV_ROCKCHIP2_DEBUG=y \
         CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=n \
         CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=n

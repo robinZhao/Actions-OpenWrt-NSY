@@ -102,6 +102,13 @@ for cfg in $CONFIG_PATTERN; do
     echo "# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set" >> $cfg
     echo "# CONFIG_CRYPTO_MANAGER_EXTRA_TESTS is not set" >> $cfg
     #sed -i 's/^# CONFIG_SWCONFIG is not set$/CONFIG_SWCONFIG=y/' "$cfg"
+    sed -i -e 's/^CONFIG_NET_DSA_REALTEK=y$/# CONFIG_NET_DSA_REALTEK is not set/' \
+          -e 's/^CONFIG_NET_DSA_REALTEK_MDIO=y$/# CONFIG_NET_DSA_REALTEK_MDIO is not set/' \
+          -e 's/^CONFIG_NET_DSA_REALTEK_RTL8365MB=y$/# CONFIG_NET_DSA_REALTEK_RTL8365MB is not set/' \
+          -e 's/^CONFIG_NET_DSA_REALTEK_RTL8366RB=y$/# CONFIG_NET_DSA_REALTEK_RTL8366RB is not set/' \
+          -e 's/^CONFIG_NET_DSA_REALTEK_SMI=y$/# CONFIG_NET_DSA_REALTEK_SMI is not set/' "$cfg" && 
+    echo "[成功] 已修改: $cfg" || echo "[失败] 修改出错: $cfg"  
+
 done
 
 # 添加机型

@@ -5,9 +5,9 @@ define KernelPackage/dsa-realtek
   TITLE:=Realtek common module RTL83xx DSA switch family
   DEPENDS:=+kmod-dsa +kmod-phy-realtek +kmod-regmap-core +kmod-dsa-rtl8366rb +kmod-dsa-rtl8365mb @!TARGET_x86 @!TARGET_bcm47xx @!TARGET_uml
   KCONFIG:= \
-	CONFIG_NET_DSA_REALTEK \
-	CONFIG_NET_DSA_REALTEK_MDIO=y \
-	CONFIG_NET_DSA_REALTEK_SMI=y
+	CONFIG_NET_DSA_REALTEK=y \
+	CONFIG_NET_DSA_REALTEK_MDIO \
+	CONFIG_NET_DSA_REALTEK_SMI
   FILES:= \
   $(LINUX_DIR)/drivers/net/dsa/realtek/realtek-mdio.ko \
   $(LINUX_DIR)/drivers/net/dsa/realtek/realtek-smi.ko 
