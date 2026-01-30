@@ -12,7 +12,7 @@ luci-app-adblock luci-i18n-adblock-zh-cn luci-app-wol luci-i18n-wol-zh-cn kmod-t
 luci-i18n-package-manager-zh-cn luci-i18n-attendedsysupgrade-zh-cn \
 zerotier tcpdump block-mount ca-certificates \
 openssl-util \
-kmod-oaf luci-app-oaf luci-i18n-oaf-zh-cn openssh-sftp-server -libustream-mbedtls libustream-openssl20201210 -apk-mbedtls apk-openssl \
+kmod-oaf luci-app-oaf luci-i18n-oaf-zh-cn openssh-sftp-server -libustream-mbedtls libustream-openssl -apk-mbedtls apk-openssl \
 " \
 FILES=dsa \
 EXTRA_IMAGE_NAME=dsa_mt
