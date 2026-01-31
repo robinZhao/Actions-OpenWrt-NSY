@@ -23,7 +23,7 @@ on:
           luci-i18n-upnp-zh-cn luci-app-https-dns-proxy luci-i18n-https-dns-proxy-zh-cn 
           luci-app-adblock luci-i18n-adblock-zh-cn luci-app-wol luci-i18n-wol-zh-cn kmod-tun 
           luci-i18n-package-manager-zh-cn luci-i18n-attendedsysupgrade-zh-cn 
-          zerotier tcpdump block-mount ca-certificates openssl-util 
+          zerotier tcpdump block-mount ca-bundle openssl-util 
           kmod-oaf luci-app-oaf luci-i18n-oaf-zh-cn openssh-sftp-server -libustream-mbedtls libustream-openssl -apk-mbedtls apk-openssl'
         type: string
 
@@ -152,13 +152,14 @@ jobs:
       run: |
         cd ${{ env.SDK_PATH }}
         downloadurl=$(grep releases include/version.mk|grep -o 'http[^)]*')
-        echo $downloadurl/targets/rockchip/armv8/packages/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/base/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/luci/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/packages/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/routing/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/telephony/packages.adb >> ./repositories
-        echo $downloadurl/packages/aarch64_generic/video/packages.adb >> ./repositories
+        touch ./repositories
+        #echo $downloadurl/targets/rockchip/armv8/packages/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/base/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/luci/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/packages/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/routing/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/telephony/packages.adb >> ./repositories
+        #echo $downloadurl/packages/aarch64_generic/video/packages.adb >> ./repositories
         # standalone not read repositories
         cp -rp $GITHUB_WORKSPACE/image-builder/* ./
         echo "#!/bin/bash" > mkimage.sh
