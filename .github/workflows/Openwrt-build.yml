@@ -347,6 +347,7 @@ jobs:
     - name: make-image
       if: ${{ inputs.CONFIG == '_all_in' }}
       id: mkimage
+      continue-on-error: true
       run: |
         cd $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/openwrt-imagebuilder*
         #cat $OPENWRT_PATH/build_dir/target-aarch64_generic_musl/root-rockchip/etc/opkg/distfeeds.conf >> ./repositories.conf
