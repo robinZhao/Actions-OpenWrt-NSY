@@ -191,5 +191,11 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
+          builder
+          ${{ env.SDK_URL }}
           **This is OpenWrt Packages**
+          ```
+          ${{ inputs.PACKAGES }}
+          ```
+          
 
