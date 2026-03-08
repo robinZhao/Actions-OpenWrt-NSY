@@ -10,7 +10,7 @@
 +				o = s.option(form.Flag, 'fullcone6', _('Enable FullCone NAT6'));
 +		}
  
- 		var p = [
+ 		let p = [
  			s.option(form.ListValue, 'input', _('Input')),
 --- a/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-08 00:00:21.597922509 +0800
 +++ b/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-21 12:18:48.209883968 +0800
