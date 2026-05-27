@@ -14,7 +14,7 @@
  			s.option(form.ListValue, 'input', _('Input')),
 --- a/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-08 00:00:21.597922509 +0800
 +++ b/feeds/luci/applications/luci-app-firewall/po/zh_Hans/firewall.po	2026-01-21 12:18:48.209883968 +0800
-@@ -330,6 +330,12 @@
+@@ -331,6 +331,12 @@
  msgid "Enable SYN-flood protection"
  msgstr "启用 SYN-flood 防御"
  
@@ -24,6 +24,6 @@
 +msgid "Enable FullCone NAT6"
 +msgstr "启用 FullCone NAT6"
 +
- #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:349
- #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:465
- #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:342
+ #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:346
+ #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:463
+ #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:339
