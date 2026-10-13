@@ -25,5 +25,5 @@
 +msgstr "启用 FullCone NAT6"
 +
  #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:346
- #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:463
+ #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:465
  #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:339
