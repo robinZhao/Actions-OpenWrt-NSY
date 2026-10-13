@@ -110,10 +110,10 @@ jobs:
 
     - name: 检查服务器性能
       run: |
-        rm -rf /opt/hostedtoolcache/*
-        rm -rf /var/cache/*
-        rm -rf /var/log/*
-        rm -rf /opt/runner-cache/*
+        sudo rm -rf /opt/hostedtoolcache/*
+        sudo rm -rf /var/cache/*
+        sudo rm -rf /var/log/*
+        sudo rm -rf /opt/runner-cache/*
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
         echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
