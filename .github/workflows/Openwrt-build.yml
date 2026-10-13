@@ -107,6 +107,9 @@ jobs:
         chmod 755 ${GITHUB_WORKSPACE}/workdir
         sudo chown $USER:$GROUPS ${GITHUB_WORKSPACE}/workdir
         echo "WORKDIR=$PWD" >> $GITHUB_ENV
+        sudo du -xh --max-depth=2 / | sort -h | tail -20
+        sudo du -xh --max-depth=1 /var | sort -h
+        sudo du -xh --max-depth=1 /usr | sort -h
 
     - name: 检查服务器性能
       run: |
