@@ -21,6 +21,7 @@ on:
         type: choice
         options:
           - master
+          - v25.12.y
           - openwrt-25.12
 
 

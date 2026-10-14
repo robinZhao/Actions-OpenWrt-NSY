@@ -2137,7 +2137,9 @@ static struct platform_driver rtl8367b_driver = {
 	},
 	.probe		= rtl8367b_probe,
 	.remove		= rtl8367b_remove,
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,11,0)
 	.remove_new		= rtl8367b_remove,
+#endif
 	.shutdown	= rtl8367b_shutdown,
 };
 
