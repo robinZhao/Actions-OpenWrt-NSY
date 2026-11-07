@@ -109,7 +109,7 @@ jobs:
 
     - name: 检查服务器性能
       run: |
-        sudo rm -rf /opt/hostedtoolcache/*
+        #sudo rm -rf /opt/hostedtoolcache/*
         sudo rm -rf /var/cache/*
         sudo rm -rf /var/log/*
         #sudo rm -rf /opt/runner-cache/*
